@@ -1,4 +1,4 @@
-# Starter folder
+# U.S. Presidential Polling Forecast 2024
 
 ## Overview
 
