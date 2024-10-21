@@ -44,3 +44,6 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# Ignore the raw data
+.presidential_polls.csv
