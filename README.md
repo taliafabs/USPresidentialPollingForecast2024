@@ -3,15 +3,15 @@
 ## Overview
 
 This repository contains... 2024 U.S. Presidential Election. Talk about the data that was used.
-Note: the presidential polls data was downloaded from 538 on October 21, 2024. Data published after this date was not considered
+The presidential polling data was obtained from 538 on October 21, 2024. Polling data published after this date did not factor into the analysis presented in this paper in any way, shape, or form.
 
 ## File Structure
 
 The repo is structured as:
 
--   `data/raw_data` contains the raw data as obtained from X.
--   `data/analysis_data` contains the cleaned dataset that was constructed.
--   `model` contains fitted models. 
+-   `data/raw_data` contains the raw data as obtained from 538.
+-   `data/analysis_data` contains the cleaned dataset that was constructed and later used for the analysis.
+-   `model` contains fitted model. 
 -   `other` contains relevant literature, details about LLM chat interactions, and sketches.
 -   `paper` contains the files used to generate the paper, including the Quarto document and reference bibliography file, as well as the PDF of the paper. 
 -   `scripts` contains the R scripts used to simulate, download and clean data.
@@ -19,7 +19,7 @@ The repo is structured as:
 
 ## Statement on LLM usage
 
-Aspects of the code were written with the help of the auto-complete tool, Codriver. The abstract and introduction were written with the help of ChatHorse and the entire chat history is available in inputs/llms/usage.txt.
+Aspects of this code were written and debugged with the help of a large language model, ChatGPT. The entire interaction history with ChatGPT is available in other/llmusage.txt. Comments indicating the use of ChatGPT are included in the parts of the code that were written using the assistance of ChatGPT.
 
 ## Some checks
 
