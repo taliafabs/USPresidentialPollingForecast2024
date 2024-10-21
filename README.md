@@ -3,6 +3,7 @@
 ## Overview
 
 This repository contains... 2024 U.S. Presidential Election. Talk about the data that was used.
+Note: the presidential polls data was downloaded from 538 on October 21, 2024. Data published after this date was not considered
 
 ## File Structure
 
