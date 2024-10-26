@@ -13,6 +13,8 @@
 library(tidyverse)
 set.seed(853)
 
+# how sophisticated it is matters
+# simulate a relationship between the two, should have interaction between the variables
 
 #### Simulate data ####
 # State names
