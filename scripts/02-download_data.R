@@ -9,18 +9,14 @@
 
 
 #### Workspace setup ####
-# library(opendatatoronto)
 library(tidyverse)
-# [...UPDATE THIS...]
+library(janitor)
+library(arrow)
 
 #### Download data ####
-# [...ADD CODE HERE TO DOWNLOAD...]
-
-
+raw_president_polls <- read_csv("data/01-raw_data/president_polls.csv")
 
 #### Save data ####
-# [...UPDATE THIS...]
-# change the_raw_data to whatever name you assigned when you downloaded it.
-write_csv(the_raw_data, "inputs/data/raw_data.csv") 
+write_parquet(raw_president_polls, "data/01-raw_data/raw_president_polls.parquet") 
 
          
