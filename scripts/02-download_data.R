@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Downloads and saves the data from 538
+# Purpose: Downloads and saves the data from fivethirtyeight as a parquet
 # Author: Talia Fabregas, Fatimah Yunusa, Aliza Mitzwani
 # Date: 24 October 2024
 # Contact: talia.fabregas@mail.utoronto.ca
