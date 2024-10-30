@@ -5,7 +5,7 @@ author:
   - Talia Fabregas
   - Fatimah Yunusa
   - Aliza Mithwani
-thanks: "Code and data are available at: [https://github.com/RohanAlexander/starter_folder](https://github.com/RohanAlexander/starter_folder)."
+thanks: "The code and data used to perform this presidential election forecast can be found at: [https://github.com/taliafabs/USPresidentialPollingForecast2024.git](https://github.com/taliafabs/USPresidentialPollingForecast2024.git)."
 date: today
 date-format: long
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
@@ -26,6 +26,9 @@ library(tidyverse)
 # Introduction
 
 Overview paragraph
+The U.S. Presidential Election will take place on Tuesday November 5th. Vice President Kamala Harris and Former President Donald Trump ... President Joe Biden made the unprecedented decision to end his re-election campaign on July 21, 2024 and immediately endorsed Vice President Kamala Harris. She became the presumptive Democratic presidential nominee the same day and secured enough delegates to win the nomination on July 28.
+
+This study only considers polling data from after President Joe Biden ended his re-election campaign and Vice President Kamala Harris became the presumptive Democratic nominee for President. Polls conducted before July 21, 2024 were not considered because they include President Joe Biden, who is no longer running for President, as the Democratic nominee. 
 
 Estimand paragraph
 
@@ -39,10 +42,8 @@ Telegraphing paragraph: The remainder of this paper is structured as follows. @s
 # Data {#sec-data}
 
 ## Overview
-
-We use the statistical programming language R [@citeR].... Our data [@shelter].... Following @tellingstories, we consider...
-
-Overview text
+<!-- We use the statistical programming language R [@citeR].... Our data [@shelter].... Following @tellingstories, we consider... -->
+This presidential election forecast was performed using the statistical programming language R [@citeR] and Presidential general election polling data from FiveThirtyEight [@fivethirtyeight]. Data cutoff October 26, 2024. No resources or articles from after this date were used or considered in any way. 
 
 ## Measurement
 	
@@ -57,19 +58,120 @@ Add graphs, tables and text. Use sub-sub-headings for each outcome variable or u
 Some of our data is of penguins (@fig-bills), from @palmerpenguins.
 
 ```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
 #| echo: false
-
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+#| include: false
+#| message: false
+setwd("/Users/talia/USPresidentialPollingForecast2024")
+analysis_data <- arrow::read_parquet("data/02-analysis_data/analysis_data.parquet")
+# print(analysis_data)
 ```
 
+```{r}
+#| label: fig-nationalavg
+#| fig-cap: National Polling Averages since May 2024
+#| echo: false
+#| warning: false
+#| message: false
+
+national <- analysis_data |>
+  filter(state=="National")
+
+ggplot(national, aes(x = end_date, y = pct, color = party)) +
+  stat_summary(geom = "line", fun = mean) +      # Plot the mean line for polling percentages
+  geom_point(size = 1, alpha = 0.15) +            # Add points for each individual poll
+  scale_color_manual(values = c("DEM" = "blue", "REP" = "red")) +
+  geom_vline(xintercept = as.Date("2024-07-21"), linetype = "dashed", color = "darkgray") +
+  labs(title = "National Polling Average by Party (DEM vs REP)",
+       x = "Date",
+       y = "Polling Percentage",
+       color = "Party") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(limits = c(25, NA))
+```
+
+Since President Biden ended his re-election campaign and Vice President Harris became the Democratic Presidential nominee, the polls have shown a dead heat between Vice President Harris and former President Trump.
+
+```{r}
+#| label: fig-sevenbattlegrounds
+#| fig-cap: seven battleground states
+#| echo: false
+#| warning: false
+#| message: false
+sevenbattlegrounds <- analysis_data |>
+  filter(state=="Wisconsin" | state == "Michigan" | state == "Pennsylvania" |
+           state == "Nevada" | state == "Arizona" | state == "Georgia" | 
+           state == "North Carolina")
+
+ggplot(sevenbattlegrounds, aes(x = end_date, y = pct, color = party)) +
+  stat_summary(geom = "line", fun = mean) +      # Plot the mean line for polling percentages
+  geom_point(size = 1, alpha = 0.15) +            # Add points for each individual poll
+  scale_color_manual(values = c("DEM" = "blue", "REP" = "red")) +
+  geom_vline(xintercept = as.Date("2024-07-21"), linetype = "dashed", color = "darkgray") +
+  labs(title = "swing states",
+       x = "Date",
+       y = "Average Polling %",
+       color = "Party") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(limits = c(35, NA)) +
+  facet_wrap(~state)
+```
+```{r}
+#| label: fig-nationalavg2
+#| fig-cap: National Polling Averages since May 2024
+#| echo: false
+#| warning: false
+#| message: false
+
+national2 <- analysis_data |>
+  filter(state=="National",
+         (candidate_name == "Kamala Harris" | candidate_name == "Donald Trump"),
+         end_date >= as.Date("2024-07-21")
+         )
+
+ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
+  stat_summary(geom = "line", fun = mean) +      # Plot the mean line for polling percentages
+  geom_point(size = 1, alpha = 0.15) +            # Add points for each individual poll
+  scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
+  # geom_vline(xintercept = as.Date("2024-07-21"), linetype = "dashed", color = "darkgray") +
+  labs(title = "National Polling Average Harris v Trump",
+       x = "Date",
+       y = "Average Polling %",
+       color = "") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(limits = c(25, NA))
+```
+
+```{r}
+#| label: fig-sevenbattlegroundskamala
+#| fig-cap: seven battleground states with harris
+#| echo: false
+#| warning: false
+#| message: false
+#| 
+sevenbattlegrounds2 <- analysis_data |>
+  filter((state=="Wisconsin" | state == "Michigan" | state == "Pennsylvania" |
+           state == "Nevada" | state == "Arizona" | state == "Georgia" | 
+           state == "North Carolina"), 
+         (candidate_name == "Kamala Harris" | candidate_name == "Donald Trump"),
+         end_date >= as.Date("2024-07-21"))
+
+ggplot(sevenbattlegrounds2, aes(x = end_date, y = pct, color = candidate_name)) +
+  stat_summary(geom = "line", fun = mean) +      # Plot the mean line for polling percentages
+  geom_point(size = 1, alpha = 0.15) +            # Add points for each individual poll
+  scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
+  labs(title = "swing states",
+       x = "Date",
+       y = "Average Polling %",
+       color = "") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(limits = c(35, NA)) +
+  # scale_x_continuous(limits=c(NA, as.Date("2024-10-29"))) +
+  facet_wrap(~state)
+```
 Talk more about it.
 
 And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
@@ -81,14 +183,14 @@ And also planes (@fig-planes). (You can change the height and width, but don't w
 #| warning: false
 #| message: false
 
-analysis_data <- read_csv(here::here("data/02-analysis_data/analysis_data.csv"))
-
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
+# analysis_data <- read_csv(here::here("data/02-analysis_data/analysis_data.csv"))
+# 
+# analysis_data |> 
+#   ggplot(aes(x = width, y = length)) +
+#   geom_point(alpha = 0.8) +
+#   theme_minimal() +
+#   labs(x = "Wing width (mm)",
+#        y = "Wing length (mm)")
 ```
 
 Talk way more about it. 
@@ -145,10 +247,10 @@ Our results are summarized in @tbl-modelresults.
 #| warning: false
 #| message: false
 
-library(rstanarm)
-
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
+# library(rstanarm)
+# 
+# first_model <-
+#   readRDS(file = here::here("models/first_model.rds"))
 ```
 
 ```{r}
@@ -158,13 +260,13 @@ first_model <-
 #| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
 #| warning: false
 
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
+# modelsummary::modelsummary(
+#   list(
+#     "First model" = first_model
+#   ),
+#   statistic = "mad",
+#   fmt = 2
+# )
 ```
 
 
@@ -213,15 +315,15 @@ In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. Th
 #| fig-cap: "Examining how the model fits, and is affected by, the data"
 #| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
 
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
+# pp_check(first_model) +
+#   theme_classic() +
+#   theme(legend.position = "bottom")
+# 
+# posterior_vs_prior(first_model) +
+#   theme_minimal() +
+#   scale_color_brewer(palette = "Set1") +
+#   theme(legend.position = "bottom") +
+#   coord_flip()
 ```
 
 ## Diagnostics
@@ -240,9 +342,9 @@ posterior_vs_prior(first_model) +
 #| fig-subcap: ["Trace plot", "Rhat plot"]
 #| layout-ncol: 2
 
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
+# plot(first_model, "trace")
+# 
+# plot(first_model, "rhat")
 ```
 
 
