@@ -18,6 +18,6 @@ library(arrow)
 raw_president_polls <- read_csv("data/01-raw_data/president_polls.csv")
 
 #### Save data ####
-write_parquet(raw_president_polls, "data/01-raw_data/raw_president_polls.parquet") 
+write_parquet(raw_president_polls, "data/01-raw_data/presidential_polls_raw_data.parquet") 
 
          
