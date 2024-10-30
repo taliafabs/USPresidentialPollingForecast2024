@@ -5,8 +5,8 @@
 # Contact: talia.fabregas@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: Download the Presidential general election polls (current cycle) 
-# data from fivethirtyeight.com
-# Any other information needed? 
+# data from fivethirtyeight.com. 
+# Any other information needed? We downloaded the data on October 26, 2024.
 
 
 #### Workspace setup ####
@@ -18,6 +18,6 @@ library(arrow)
 raw_president_polls <- read_csv("data/01-raw_data/president_polls.csv")
 
 #### Save data ####
-write_parquet(raw_president_polls, "data/01-raw_data/presidential_polls_raw_data.parquet") 
+write_parquet(raw_president_polls, "data/01-raw_data/raw_data.parquet") 
 
          
