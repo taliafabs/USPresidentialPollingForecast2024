@@ -4,8 +4,9 @@
 # Date: 24 October 2024
 # Contact: talia.fabregas@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: Download the Presidential general election polls (current cycle) 
+# data from fivethirtyeight.com
+# Any other information needed? 
 
 
 #### Workspace setup ####
