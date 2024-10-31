@@ -2,19 +2,18 @@
 
 ## Overview
 
-This repository contains... 2024 U.S. Presidential Election. Talk about the data that was used.
-The presidential polling data was obtained from 538 on October 21, 2024. Polling data published after this date did not factor into the analysis presented in this paper in any way, shape, or form.
+This repository contains the code and data used to complete this 2024 U.S. Presidential Election Forecast. It was created by Talia Fabregas, Aliza Mithwani, and Fatimah Yunusa. This U.S. Election Forecast was performed using Presidential general election polling data (current cycle), downloaded from FiveThirtyEight on October 29, 2024. Polling data published after this date was not considered.
 
 ## File Structure
 
-The repo is structured as:
+The repository is structured as follows:
 
--   `data/raw_data` contains the raw data as obtained from 538.
--   `data/analysis_data` contains the cleaned dataset that was constructed and later used for the analysis.
--   `model` contains fitted model. 
--   `other` contains relevant literature, details about LLM chat interactions, and sketches.
--   `paper` contains the files used to generate the paper, including the Quarto document and reference bibliography file, as well as the PDF of the paper. 
--   `scripts` contains the R scripts used to simulate, download and clean data.
+-   `data/raw_data` contains the raw data that was obtained from FiveThirtyEight on October 29, 2024.
+-   `data/analysis_data` contains the cleaned datasets that were constructed and used for the analysis.
+-   `model` contains fitted models. 
+-   `other` contains details about LLM usage/interactions and sketches.
+-   `paper` contains the files used to generate the paper, including the Quarto document, the PDF of the paper, and the reference bibliography file. 
+-   `scripts` contains the R scripts used to simulate, download and clean data, as well as the script used to build the models.
 
 
 ## Statement on LLM usage
@@ -23,8 +22,6 @@ Aspects of this code were written and debugged with the help of a large language
 
 ## Some checks
 
-- [ ] Change the rproj file name so that it's not starter_folder.Rproj
-- [ ] Change the README title so that it's not Starter folder
 - [ ] Remove files that you're not using
 - [ ] Update comments in R scripts
 - [ ] Remove this checklist
