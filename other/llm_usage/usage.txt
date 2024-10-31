@@ -1169,11 +1169,6 @@ any(is.na(harris_new_data))  # Should return FALSE
 Conclusion
 By following these guidelines, your harris_new_data data frame should be properly structured for use with your model for making predictions. If you have any further questions or need clarification on any point, feel free to ask!
 
-
-
-
-
-
 You said:
 harris_new_data <- data.frame(
   end_date_num = seq(
@@ -1795,4 +1790,162 @@ ChatGPT said:
 ChatGPT
 The number of days between July 21, 2024, and October 29, 2024, is 100 days.
 
+make this reproducible #| include: false
+#| warning: false
+#| message: false
+#| echo: false
 
+library(tidyverse)
+library(janitor)
+library(ggplot2)
+library(scales)
+library(rstanarm)
+library(knitr)
+library(kableExtra)
+
+setwd("/Users/talia/USPresidentialPollingForecast2024")
+analysis_data <- arrow::read_parquet("data/02-analysis_data/analysis_data.parquet")
+harris_analysis_data <- arrow::read_parquet("data/02-analysis_data/harris-analysis_data.parquet")
+trump_analysis_data <- arrow::read_parquet("data/02-analysis_data/trump-analysis_data.parquet")
+ChatGPT said:
+ChatGPT
+To make the code reproducible, you’ll want to include any necessary steps to prepare your environment, load the data, and handle any missing packages or dependencies. Here’s an updated version of your script with steps to install missing packages, load necessary libraries, and set a reproducible seed. I'll also add some comments for clarity.
+
+r
+Copy code
+#| include: false
+#| warning: false
+#| message: false
+#| echo: false
+
+# Load required libraries, install if missing
+required_packages <- c("tidyverse", "janitor", "ggplot2", "scales", "rstanarm", "knitr", "kableExtra", "arrow")
+new_packages <- required_packages[!(required_packages %in% installed.packages()[,"Package"])]
+if(length(new_packages)) install.packages(new_packages)
+
+library(tidyverse)
+library(janitor)
+library(ggplot2)
+library(scales)
+library(rstanarm)
+library(knitr)
+library(kableExtra)
+library(arrow)
+
+# Set working directory (update this to a relative path if possible for reproducibility)
+setwd("/Users/talia/USPresidentialPollingForecast2024")
+
+# Load data
+analysis_data <- read_parquet("data/02-analysis_data/analysis_data.parquet")
+harris_analysis_data <- read_parquet("data/02-analysis_data/harris-analysis_data.parquet")
+trump_analysis_data <- read_parquet("data/02-analysis_data/trump-analysis_data.parquet")
+
+# Set a random seed for reproducibility
+set.seed(304)
+
+# Ensure data is cleaned and factor levels are set correctly for models
+harris_analysis_data <- harris_analysis_data %>%
+  clean_names() %>%
+  mutate(
+    state = factor(state),
+    pollster = factor(pollster)
+  )
+
+trump_analysis_data <- trump_analysis_data %>%
+  clean_names() %>%
+  mutate(
+    state = factor(state),
+    pollster = factor(pollster)
+  )
+
+# Check the first few rows of each dataset to ensure successful loading and preparation
+head(harris_analysis_data)
+head(trump_analysis_data)
+
+# Continue with modeling, prediction, and plotting as per your existing code
+# (Include all modeling and plotting code here with any further customization required for reproducibility)
+Explanation
+Package Installation: The code now checks if each required package is installed and installs any missing packages, making it easier to run this script in a new environment.
+Reproducibility: Setting a seed ensures consistent results when sampling or modeling with randomness.
+Data Loading and Cleaning: Using clean_names() helps ensure column names are in a consistent format. Setting state and pollster as factors ensures they are handled correctly in modeling.
+Working Directory: You might update this to a relative path if sharing this script to avoid hardcoding a specific directory.
+Now, this script is ready for use in a clean environment with minimal setup required.
+
+
+
+
+
+
+You said:
+how do i update this to relative path setwd("/Users/talia/USPresidentialPollingForecast2024")
+ChatGPT said:
+ChatGPT
+To update your working directory to a relative path, you can use the here package, which helps manage file paths relative to the project directory. This way, your code becomes more portable and easier to share without requiring specific directory structures on others' machines.
+
+Steps to Use Relative Paths with here
+Install the here Package: If you don't have it already, you can install it:
+
+r
+Copy code
+install.packages("here")
+Update Your Code: Modify your script to use here for setting the working directory and loading data. Here's how you can do it:
+
+r
+Copy code
+#| include: false
+#| warning: false
+#| message: false
+#| echo: false
+
+# Load required libraries, install if missing
+required_packages <- c("tidyverse", "janitor", "ggplot2", "scales", "rstanarm", "knitr", "kableExtra", "arrow", "here")
+new_packages <- required_packages[!(required_packages %in% installed.packages()[,"Package"])]
+if(length(new_packages)) install.packages(new_packages)
+
+library(tidyverse)
+library(janitor)
+library(ggplot2)
+library(scales)
+library(rstanarm)
+library(knitr)
+library(kableExtra)
+library(arrow)
+library(here)
+
+# Set the working directory to the project root using `here()`
+# This assumes your R script is in a subdirectory of the project root
+# Adjust the path in here() as needed to point to the correct folder
+setwd(here::here())
+
+# Load data using relative paths
+analysis_data <- read_parquet(here("data", "02-analysis_data", "analysis_data.parquet"))
+harris_analysis_data <- read_parquet(here("data", "02-analysis_data", "harris-analysis_data.parquet"))
+trump_analysis_data <- read_parquet(here("data", "02-analysis_data", "trump-analysis_data.parquet"))
+
+# Set a random seed for reproducibility
+set.seed(304)
+
+# Ensure data is cleaned and factor levels are set correctly for models
+harris_analysis_data <- harris_analysis_data %>%
+  clean_names() %>%
+  mutate(
+    state = factor(state),
+    pollster = factor(pollster)
+  )
+
+trump_analysis_data <- trump_analysis_data %>%
+  clean_names() %>%
+  mutate(
+    state = factor(state),
+    pollster = factor(pollster)
+  )
+
+# Check the first few rows of each dataset to ensure successful loading and preparation
+head(harris_analysis_data)
+head(trump_analysis_data)
+
+# Continue with modeling, prediction, and plotting as per your existing code
+Explanation
+here::here(): This function sets the working directory relative to the project root. This allows you to specify paths to your files relative to that root, making it easier to share your code without worrying about absolute paths.
+Loading Data: Using here() to specify the path to your data files ensures that your script will work regardless of where it’s run, as long as the directory structure is the same relative to the project root.
+This setup will help keep your project organized and make it easier for others to run your code without needing to modify paths.
