@@ -1,54 +1,89 @@
 #### Preamble ####
-# Purpose: Simulates a dataset of Australian electoral divisions, including the 
-  #state and party that won each division.
-# Author: Rohan Alexander
-# Date: 26 September 2024
-# Contact: rohan.alexander@utoronto.ca
+# Purpose: Simulates a dataset that contains
+# Author: Talia Fabregas, Aliza Mithwani, Fatimah Yunusa
+# Date: 31 October 2024
+# Contact: talia.fabregas@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: The `tidyverse` package must be installed
-# Any other information needed? Make sure you are in the `starter_folder` rproj
+# Pre-requisites: The `tidyverse` and `arrow` packages must be installed
+# Any other information needed? Make sure you are in the `USPresidentialPollingForecast2024` rproj
 
 
 #### Workspace setup ####
 library(tidyverse)
-set.seed(853)
+library(arrow)
+set.seed(538)
+num_simulated_polls <- 1000
 
-# how sophisticated it is matters
-# simulate a relationship between the two, should have interaction between the variables
+# simulate a relationship with interaction between state and support for Harris and Trump
 
 #### Simulate data ####
 # State names
 states <- c(
-  "New South Wales",
-  "Victoria",
-  "Queensland",
-  "South Australia",
-  "Western Australia",
-  "Tasmania",
-  "Northern Territory",
-  "Australian Capital Territory"
-)
+  "National",
+  "Pennsylvania",
+  "Texas",
+  "Nebraska",
+  "Nebraska CD-2",
+  "Florida",
+  "Georgia",
+  "Michigan",
+  "Minnesota",
+  "Nevada",
+  "New Hampshire",
+  "North Carolina",
+  "Virginia",
+  "Wisconsin",
+  "Montana",
+  "Missouri"
+  )
+
+# Pollsters
+pollsters <- c("YouGov", "Siena/NYT", "CES / YouGov", "Marquette Law School", 
+               "The Washington Post", "McCourtney Institute/YouGov")
 
 # Political parties
-parties <- c("Labor", "Liberal", "Greens", "National", "Other")
+nominees <- c("Kamala Harris", "Donald Trump")
+dates <- seq(as.Date("2024-07-21"), as.Date("2024-10-29"), by = "day")
 
-# Create a dataset by randomly assigning states and parties to divisions
-analysis_data <- tibble(
-  division = paste("Division", 1:151),  # Add "Division" to make it a character
+#### Simulate the Data ####
+simulated_data <- tibble(
+  poll_id = 1:num_simulated_polls,
   state = sample(
     states,
-    size = 151,
+    size = num_simulated_polls,
     replace = TRUE,
-    prob = c(0.25, 0.25, 0.15, 0.1, 0.1, 0.1, 0.025, 0.025) # Rough state population distribution
+    # make it sample National polls and the states at a similar rate to the polling data
+    # competitiveness and number of electoral votes make a staet more likely to be sampled
+    prob = c(0.45, 0.21, 0.06, 0.02, 0.04, 0.05, 0.1, 0.15, 0.01, 0.05, 0.01, 
+             0.075, 0.004, 0.19, 0.001, 0.001)
+    ),
+  pollster = sample(pollsters, num_simulated_polls, replace = TRUE),
+  # this makes support for Harris interact with the state. 
+  # higher in states like Minnesota, Virginia, and New Hampshire
+  # lower in Texas, Florida, Montana, Missouri
+  # in the case where only trump and harris are considered, close to 50 in the
+  # seven battleground states
+  harris_pct = case_when(
+   state == "National" ~ rnorm(1, mean=50, sd=2.5),
+   state == "Michigan" ~ rnorm(1, mean=50, sd=2.5),
+   state == "Wisconsin" ~ rnorm(1, mean=50, sd=2.5),
+   state == "Pennsylvania" ~ rnorm(1, mean=50, sd=2.5),
+   state == "Arizona" ~ rnorm(1, mean=50, sd=2.5),
+   state == "Nevada" ~ rnorm(1, mean=50, sd=2.5),   
+   state == "Georgia" ~ rnorm(1, mean=50, sd=2.5),
+   state == "North Carolina" ~ rnorm(1, mean=50, sd=2.5),
+   state == "Florida" ~ rnorm(1, mean=43, sd=2.5),
+   state == "Texas" ~ rnorm(1, mean=45, sd=2.5),
+   state == "Nebraska" ~ rnorm(1, mean=0.38, sd=2.5),
+   state == "Nebraska CD-2" ~ rnorm(1, mean=0.53, sd=2.5),
+   state == "New Hampshire" ~ rnorm(1, mean=0.54, sd=2.5),
+   state == "Virgninia" ~ rnorm(1, mean=0.54, sd=2.5),
+   state == "Minnesota" ~ rnorm(1, mean=0.53, sd=2.5),
+   state == "Missouri" ~ rnorm(1, mean=0.41, sd=2.5)
   ),
-  party = sample(
-    parties,
-    size = 151,
-    replace = TRUE,
-    prob = c(0.40, 0.40, 0.05, 0.1, 0.05) # Rough party distribution
-  )
+  trump_pct = 100-harris_pct
 )
 
-
 #### Save data ####
-write_csv(analysis_data, "data/00-simulated_data/simulated_data.csv")
+write_csv(simulated_data, "data/00-simulated_data/simulated_data.csv")
+write_parquet(simulated_data, "data/00-simulated_data/simulated_data.parquet")
