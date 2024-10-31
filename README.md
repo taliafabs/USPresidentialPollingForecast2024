@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains the code and data used to complete this 2024 U.S. Presidential Election Forecast. It was created by Talia Fabregas, Aliza Mithwani, and Fatimah Yunusa. This U.S. Election Forecast was performed using Presidential general election polling data (current cycle), downloaded from FiveThirtyEight on October 29, 2024. Polling data published after this date was not considered.
+This repository contains the code and data used to complete this 2024 U.S. Presidential Election Forecast. It was created by Talia Fabregas, Aliza Mithwani, and Fatimah Yunusa. This U.S. Election Forecast was performed using Presidential general election polling data (current cycle), downloaded from FiveThirtyEight on October 29, 2024 and the poll-of-polls method. Polling data published after this date was not considered.
 
 ## File Structure
 
