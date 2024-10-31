@@ -1,11 +1,15 @@
 #### Preamble ####
-# Purpose: Cleans the raw presidential polling data obtained from 538
+# Purpose: Cleans the raw presidential polling data obtained from FiveThirtyEight
 # Author: Talia Fabregas, Aliza Mithwani, Fatimah Yunusa
 # Date: 28 October 2024
 # Contact: talia.fabregas@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: Run 02-download_data.R first
-# Any other information needed? 
+# Pre-requisites: 
+# - The president_polls data must be downloaded and saved as a parquet to data/raw_data
+# - The `tidyverse`, `janitor`, and `arrow` packages must be installed and loaded
+# - 02-download_data.R must have been run
+# Any other information needed? We downloaded our president_polls data from FiveThirtyEight on
+# October 29, 2024
 
 #### Workspace setup ####
 library(tidyverse)
@@ -32,14 +36,17 @@ cleaned_data <-
     (party== "DEM" | party == "REP"), 
     numeric_grade >= 3.0,
     end_date >= as.Date("2024-05-05"),
-    (population == "lv")
+    (population == "lv"),
+    !is.na(pct),
+    !is.na(pollscore)
   ) |>
-  select(poll_id, pollster_id, pollster, numeric_grade, pollscore, methodology, 
-         transparency_score, state, end_date, sponsor_candidate_id, 
-         sponsor_candidate_party, endorsed_candidate_id, endorsed_candidate_party,
-         sample_size, population, internal, partisan, party, candidate_name, pct,
-         num, is_national
-         )
+  select(poll_id, pollster, numeric_grade, pollscore, methodology, state, end_date, population, party, candidate_name, pct, is_national)
+  # select(poll_id, pollster_id, pollster, numeric_grade, pollscore, methodology, 
+  #        transparency_score, state, end_date, sponsor_candidate_id, 
+  #        sponsor_candidate_party, endorsed_candidate_id, endorsed_candidate_party,
+  #        sample_size, population, internal, partisan, party, candidate_name, pct,
+  #        num, is_national
+  #        ) |>
 
 harris <- 
   cleaned_data |>
@@ -48,8 +55,9 @@ harris <-
   mutate(
       num_harris = round((pct / 100) * sample_size, 0), # Need number not percent for some models
       pct_harris = pct,
-      end_date_num = (end_date - as.Date("2024-07-21"))
-  )
+      end_date_num = as.numeric(end_date - as.Date("2024-07-21"))
+  ) |>
+  select(poll_id, pollster, numeric_grade, pollscore, methodology, state, end_date, population, num_harris, pct_harris, end_date_num)
 
 trump <- 
   cleaned_data |>
@@ -57,8 +65,9 @@ trump <-
   mutate(
     num_trump = round((pct / 100) * sample_size, 0), # Need number not percent for some models
     pct_trump = pct,
-    end_date_num = (end_date - as.Date("2024-07-21"))
-  )
+    end_date_num = as.numeric(end_date - as.Date("2024-07-21"))
+  ) |>
+  select(poll_id, pollster, numeric_grade, pollscore, methodology, state, end_date, population, num_trump, pct_trump, end_date_num)
   
 
 # # Subset the data to high-quality Harris and Trump polling estimates after she became presumptive DEM nominee
