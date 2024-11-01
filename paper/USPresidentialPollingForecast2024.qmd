@@ -3,8 +3,8 @@ title: "This Election is too Close to Call"
 subtitle: "Vice President Kamala Harris Projected to Win Exactly 270 Electoral Votes and 48.1% of the Popular Vote Based on Poll of Polls and Bayesian Modeling Analysis"
 author: 
   - Talia Fabregas
-  - Fatimah Yunusa
   - Aliza Mithwani
+  - Fatimah Yunusa
 thanks: "The code and data used to perform this presidential election forecast can be found at: [https://github.com/taliafabs/USPresidentialPollingForecast2024.git](https://github.com/taliafabs/USPresidentialPollingForecast2024.git)."
 date: October 29, 2024
 date-format: long
@@ -827,7 +827,7 @@ trump_pred_summary_az <- trump_pred_summary_az %>%
 combined_pred_summary_az <- bind_rows(harris_pred_summary_az, trump_pred_summary_az)
 
 # Plot the combined data with both candidates' lines and ribbons
-ggplot() +
+arizona_plot <- ggplot() +
   # Plot the original data points for Harris
   geom_point(data = harris_analysis_data, aes(x = end_date_num, y = pct_harris, color = pollster), alpha = 0.6) +
   # Plot the original data points for Trump
@@ -861,7 +861,7 @@ ggplot() +
   labs(
     x = "Days since Biden withdrew",
     y = "",
-    title = "Poll Percentage over Time with Spline Fit (Kamala Harris vs Donald Trump) Arizona"
+    title = "Trump leads Harris in Arizona"
   ) +
   theme_minimal() +
   scale_y_continuous(labels = scales::percent_format(scale = 1)) +
