@@ -13,6 +13,7 @@
 
 #### Workspace setup ####
 library(tidyverse)
+library(testthat)
 
 simulated_data <- read_csv("data/00-simulated_data/simulated_data.csv")
 
