@@ -1,6 +1,6 @@
 ---
 title: "This Election is too Close to Call"
-subtitle: "Vice President Kamala Harris Projected to Win Exactly 270 Electoral Votes and 48.1% of the Popular Vote Based on Poll of Polls and Bayesian Modeling Analysis"
+subtitle: "Vice President Kamala Harris Projected to Defeat Former President Donald Trump in the  48.3% to 47.1% in the Popular Vote and 270 to 268 in the Electoral College Based on Poll of Polls and Bayesian Modeling Analysis"
 author: 
   - Talia Fabregas
   - Aliza Mithwani
@@ -51,17 +51,17 @@ Tuesday November 5th, 2024, Americans will head to the polls to elect their 47th
 
 <!-- Estimand paragraph -->
 
-This paper uses presidential polling data from after President Joe Biden ended his re-election campaign and Vice President Harris became the presumptive democratic nominee and Bayesian analysis models to estimate the percentage of voters supporting Vice President Harris and former President Trump. The estimands are the percentages of voters supporting Vice President Harris and former President Trump at the national level, in each of the seven key battleground states (Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania), and in Nebraska's second congressional district. 
+This paper uses presidential polling data from after President Joe Biden ended his re-election campaign and Vice President Harris became the presumptive democratic nominee and Bayesian analysis models to estimate the percentage of voters supporting Vice President Harris and former President Trump. The estimands are the percentages of voters supporting Vice President Harris and former President Trump at the national level, in each of the seven key battleground states (Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania), and in Nebraska's second congressional district.
 
 <!-- Results paragraph -->
 
-Based on the results of applying our Bayesian model, we estimate that Vice President Harris will receive x% of the popular vote and win the swing states of ... and former President Trump will receive x% of the popular vote and win the swing states of ...
+Based on the results of applying our Bayesian model, we estimate that Vice President Harris will receive 48.3% of the popular vote and win the swing states of Michigan, Wisconsin, Pennsylvania, and Nebraska CD-2, and former President Trump will receive 47.1% of the popular vote and win the swing states of Arizona, Nevada, North Carolina, and Georgia. We use a baseline of 222 electoral votes for Vice President Harris from safe and likely Democratic states that were won by both Hillary Clinton and President Biden in 2016 and 2020, and 219 electoral votes for former President Trump from safe and likely Republican states that he won in 2016 and 2020 [@270towin]. As a result, we estimate that Vice President Harris will defeat former President Trump in the electoral college 270 to 268.
 
 <!-- Why it matters paragraph -->
 
 Vice President Harris and former President Trump present staunchly different policies and visions for the future of the United States. Vice President Harris has campaigned on reproductive rights, supporting small businesses, building more affordable housing, expanding medicare coverage, and cutting taxes for the middle class. Former President Trump has campaigned on a 200% tariff, ending foreign aid to Ukraine, and securing the Southern border despite instructing his allies in the U.S. Senate to oppose a bipartisan border bill. Women make up 50% of the U.S. population, but all 46 presidents so far have been men. Only one person of color, Barack Obama, has ever been elected president.
 
-The remainder of this paper is structured as follows. @sec-data contains an overview of the polling dataset from @fivethirtyeight that was used, visualizations of different variables, and summary statistics. @sec-model contains the Bayesian regression models used to predict the percentages of voters that will support Vice President Harris and former President Trump. @sec-results contains tables and visualizations that present the national popular vote and state-level results after applying the Bayesian regression model model. @sec-discussion contains detailed discussions about the .... \[Appendix -@sec-idealized-meth\] contains a thorough discussion about an idealized methodology that we would use if given a \$100,000 budget to build a survey to forecast the 2024 U.S. election and our idealized survey questions. [Appendix -@sec-pollster-meth] contains a deep-dive into and evaluation of the methodologies used in the Siena College/New York Times poll.
+The remainder of this paper is structured as follows. @sec-data contains an overview of the polling dataset from @fivethirtyeight that was used, visualizations of different variables, and summary statistics. @sec-model contains the Bayesian regression models used to predict the percentages of voters that will support Vice President Harris and former President Trump. @sec-results contains tables and visualizations that present the national popular vote and state-level results after applying the Bayesian regression model model. @sec-discussion contains detailed discussions about the .... [Appendix -@sec-idealized-meth] contains a thorough discussion about an idealized methodology that we would use if given a \$100,000 budget to build a survey to forecast the 2024 U.S. election and our idealized survey questions. [Appendix -@sec-pollster-meth] contains a deep-dive into and evaluation of the methodologies used in the Siena College/New York Times poll.
 
 The statistical programming language [@citeR] and the `tidyverse`, `janitor`, `ggplot`, `kableExtra`, `arrow`, `rstanarm`, and `spline` packages were used to perform this election forecast, clean the dataset, build the Bayesian regression models, create data visualizations and tables, and apply the model.
 
@@ -71,15 +71,19 @@ The statistical programming language [@citeR] and the `tidyverse`, `janitor`, `g
 
 This presidential election forecast was performed using the statistical programming language R [@citeR] and Presidential general election polling data from FiveThirtyEight [@fivethirtyeight]. The data was downloaded on October 29, 2024; polling data released after this date was not considered anywhere in this paper. The presidential polls dataset from FiveThirtyEight contains national polls and state-level polls for each of the 50 states and congressional districts in Maine and Nebraska [@fivethirtyeight]. The polls are conducted by various pollsters, including YouGov, Siena/NYT, CES/YouGov, Marquette Law School, The Washington Post, and McCourtney Institute/YouGov. We analyze national data and state-level data for the seven swing states that are expected to determine the results of this election: Michigan, Wisconsin, Pennsylvania, North Carolina, Georgia, Nevada, and Arizona.
 
-We cleaned this dataset to only include high-quality polls at the national and state-level conducted on or after July 21, 2024. We determined which polls were high-quality based on the numeric grade, and cleaned the dataset to include only polls with a numeric grade of at least 3.0. Polls with a rating (`numeric_grade`) of 3.0 are conducted by the best pollsters in the United States and score in the 99th percentile or better for accuracy and transparency [@MorrisBestPollsters].
+We cleaned this dataset to only include high-quality polls at the national and state-level conducted on or after July 21, 2024. We determined which polls were high-quality based on the numeric grade, and cleaned the dataset to include only polls with a numeric grade of at least 3.0. Polls with a rating (`numeric_grade`) of 3.0 are conducted by the best pollsters in the United States and score in the 99th percentile or better for accuracy and transparency [@MorrisBestPollsters]. We included only polls where the `population` is likely voters. If a poll in the dataset from @fivethirtyeight includes multiple populations, the narrowest one is used (likely voters over registered voters and registered voters over all American adults) [@Morris538].
 
 ## Measurement
 
-Some paragraphs about how we go from a phenomena in the world to an entry in the dataset.
+<!-- Some paragraphs about how we go from a phenomena in the world to an entry in the dataset. -->
+
+During U.S. presidential and midterm election cycles, different pollsters conduct polls (surveys) to estimate support for Democratic, Republican, and third-party candidates and forecast the election results. Sampling and survey methodologies vary by pollster and we discuss the methodologies used by the Siena College/New York Times poll in [Appendix -@sec-pollster-meth]. Each poll aims to survey a population representative of the U.S. electorate or likely voters to predict support percentages for each candidate and which candidate will win.
+
+Our dataset from @fivethirtyeight is a a collection of presidential polls from different pollsters that were conducted during the 2024 presidential election cycle. Each entry represents the percentage of respondents to a unique poll supporting Vice President Harris (after July 21, 2024) or President Joe Biden (before July 21, 2024), former President Trump, and third-party candidates. Unique polls are identified by a poll id and each entry contains information about the poll, such as the pollster that conducted it, its population, sample size, and the methodology that was used and information about its quality and accuracy, including its numeric grade, pollscore, and transparency score.
 
 ## Outcome and predictor variables
 
-We will use `end_date` (the date that a poll was completed), `state`, `pollster`, and `pollscore` to predict support for Vice President Harris and former President Trump at the national level, at the state level for each of the seven battleground states, and in Nebraska's second congressional district in @sec-model.
+We will use `end_date` (the date that a poll was completed), `state`, `pollster`, and `pollscore` to predict support for Vice President Harris and former President Trump at the national level, at the state level for each of the seven battleground states, and in Nebraska's second congressional district in @sec-model. The tables and visualizations below present our exploratory data analysis and illustrate possible relationships between the variables and support for Vice President Harris and former President Trump.
 
 ### National and swing state polling averages over time
 
@@ -298,10 +302,10 @@ pct\_trump_i &= \beta_0 + \beta_1 \cdot ns(end\_date\_num_i, df=5) + \beta_2 \cd
 \beta_4 &\sim \mbox{Normal}(0, 5) 
 \end{align*}
 ```
-
 The model is run in R [@citeR] using the `rstanarm` package of @rstanarm. The default priors from `rstanarm` are used for both GLM Bayesian models. The intercept normal prior with $\mu=50$ and $\sigma=10$ reflects the central tendencies of Harris and Trump's polling percentages, influenced by prior knowledge and the predictors use a normal prior with $\mu=0$ and $\sigma=5$ [@rstanarm].
 
 ### Model justification
+
 We used Bayesian regression models with ... to predict support for Harris and Trump ...
 
 # Results {#sec-results}
@@ -904,7 +908,29 @@ We will use a stratified sampling approach to closely examine voter demographics
 
 ## Respondent recruitment
 
-## Idealized survey
+We will use multi-channel respondent recruitment, including both phone and digital outreach. Phone outreach will allow us to capture older demographics and individuals who use the internet and social media less. Digital outreach, such as targeted social media ads, email lists, and news websites will enable us to recruit a broad sample. Digital outreach channels are cost effective and can reach younger demographics. We will allocate \$28,000 of our budget for rewarding survey respondents to improve our response rates, particularly within harder-to-reach groups such as young people and low-information voters [@tswd]. As shown by @BMC, incentives increase survey participation, particularly amongst lower-response demographics.
+
+## Survey Design
+
+Our survey is conducted using GoogleForms, which allows for an easy, user-friendly experience and increases respondent likelihood. The survey length is kept within the five to ten minute range, with thirteen questions to balance the need for data collection with the need for respondent engagement [@stantcheva2023].
+
+The survey includes the following sections:
+
+-   Demographics: In this section, we collect essential demographic data that we will use for post-survey weighting. This includes gender and ethnicity.
+
+-   Candidate evaluation: This section includes direct questions about candidate support, vote choice, and support level.
+
+-   Key issues and concerns: This section includes questions that aim to identify the top issues driving voter decisions, such as abortion rights and the economy.
+
+## Data Validation
+
+## Poll Aggregation
+
+## Weighting and Data Adjustments
+
+## Budget
+
+## Idealized survey questions
 
 2024 U.S. Presidential Election Poll This survey collects information about voters' political views and who they support in the 2024 U.S. Presidential Election. The data collected will not be shared with any external parties and will strictly be used for analytical purposes. This survey is completely anonymous and your data will be protected. Any published material regarding the results drawn from this survey cannot be traced back to you. The goal of this survey is to draw conclusions about the 2024 presidential elections held in the United States. Please answer as accurately as possible. If you have any questions or concerns, please reach out to aliza.mithwani\@mail.utoronto.ca (correspondence will not be shared with any external parties).
 
@@ -914,6 +940,7 @@ We will use a stratified sampling approach to closely examine voter demographics
 **Demographics Questions**
 
 3.  Would you consider yourself: White Black or African American Hispanic or Latino Asian American Indian or Alaskan Native Middle Eastern or North African Native Hawaiian or Pacific Islander Prefer not to say Other (specify)
+
 4.  What is your age? 18-29 20-44 45-64 65+ Prefer not to say
 
 5.  What sex were you assigned at birth, on your original birth certificate? "Female" “Male” Prefer not to say
