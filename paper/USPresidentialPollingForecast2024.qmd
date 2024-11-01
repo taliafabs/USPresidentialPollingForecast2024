@@ -1,14 +1,14 @@
 ---
-title: "This Election is too Close to Call"
-subtitle: "Vice President Kamala Harris Projected to Defeat Former President Donald Trump in the  48.3% to 47.1% in the Popular Vote and 270 to 268 in the Electoral College Based on Poll of Polls and Bayesian Modeling Analysis"
+title: "Forecasting the 2024 U.S. Presidential Election"
+subtitle: "Kamala Harris Projected to Defeat Donald Trump 48.3% to 47.1% in the Popular Vote and 270 to 268 in the Electoral College Based on Poll of Polls and Bayesian Modeling Analysis"
 author: 
   - Talia Fabregas
   - Aliza Mithwani
   - Fatimah Yunusa
 thanks: "The code and data used to perform this presidential election forecast can be found at: [https://github.com/taliafabs/USPresidentialPollingForecast2024.git](https://github.com/taliafabs/USPresidentialPollingForecast2024.git)."
-date: October 29, 2024
+date: today
 date-format: long
-abstract: "The U.S. Presidential election will take place on Tuesday, November 5th with Vice President Kamala Harris and former President Donald Trump in a close race for the White House. In this paper, we used the poll-of-polls method and applied a Bayesian model to estimate the winner of the popular vote and the winner of each of the seven key battleground states: Arizona, Georgia, Nevada, North Carolina, Michigan, Wisconsin, and Pennsylvania, and Nebraska's second congressional disctict. Using the results of our poll-of-polls analysis, we predict that Vice President Harris will win the popular vote, 48.3% to 47.1% and the electoral college 270 to 268 by winning three of the seven battleground states, Wisconsin, Michigan, and Pennsylvania. Our analysis shows that the race is extremely tight and former President Trump winning the popular vote, electoral college, or both is well within the margin of error. Our results show a statistical tie when we account for error, bias, weaknesses, and limitations."
+abstract: "The U.S. Presidential election will take place on Tuesday, November 5th with Vice President Kamala Harris and former President Donald Trump in a close race for the White House. In this paper, we used the poll-of-polls method and applied a Bayesian model to estimate the winner of the popular vote and the winner of each of the seven battleground states: Arizona, Georgia, Nevada, North Carolina, Michigan, Wisconsin, and Pennsylvania, and Nebraska's second congressional disctict. Using the results of our poll-of-polls analysis, we predict that Vice President Harris will win the popular vote, 48.3% to 47.1% and the electoral college 270 to 268 by winning three of the seven battleground states, Wisconsin, Michigan, and Pennsylvania. Our analysis shows that the race is extremely tight and former President Trump winning the popular vote, electoral college, or both is well within the margin of error. Our results show a statistical tie when we account for error, bias, weaknesses, and limitations."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -51,7 +51,7 @@ On Tuesday November 5, 2024, Americans will head to the polls to elect their 47t
 
 <!-- Estimands paragraph -->
 
-The estimands are the percentages of voters supporting Vice President Harris and former President Trump at the national level, in each of the seven key battleground states (Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania), and in Nebraska's second congressional district.
+The estimands, defined by @tswd as the values we are trying to estimate, are the percentages of voters that support Vice President Harris and former President Trump at the national level, in each of the seven battleground states (Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania), and in Nebraska's second congressional district.
 
 <!-- Results paragraph -->
 
@@ -81,15 +81,15 @@ Our dataset from @fivethirtyeight is a a collection of presidential polls from d
 
 ## Outcome and predictor variables
 
-We will use `end_date` (the date that a poll was completed), `state`, `pollster`, and `pollscore` to predict support for Vice President Harris and former President Trump at the national level, at the state level for each of the seven battleground states, and in Nebraska's second congressional district in @sec-model. The tables and visualizations below present our exploratory data analysis and possible relationships between the predictor variables and support for Vice President Harris and former President Trump.
+We will use `end_date` (the date that a poll was completed), `state`, `pollster`, and `pollscore` to predict support for Vice President Harris and former President Trump at the national level, at the state level for each of the seven battleground states, and in Nebraska's second congressional district in @sec-model. The tables and visualizations below present possible relationships between the predictor variables and support for Vice President Harris and former President Trump.
 
-### National and swing state polling averages over time
+### Variation in support for Harris and Trump by state
 
 The percentage of voters that support Vice President Harris and former President Trump varies by state; in some states support for Vice President Harris is higher than the national average and in others, it is lower than the national average. The 2024 presidential election is expected to be decided by seven swing states: Arizona, Georgia, Nevada, North Carolina, Wisconsin, Michigan, and Pennsylvania and Nebraska's second congressional district [@270towin]. Two states, Maine and Nebraska, award one electoral vote to the popular vote winner in each congressional district and an additional two electoral votes to the statewide popular vote winner [@270towin].
 
 ```{r}
 #| label: tbl-avgsummary
-#| tbl-cap: Polling averages for Harris and Trump at the national level and at the state level for the states included in the polling dataset as of October 29, 2024 show a narrow popular vote lead for Vice President Harris and extremely close races in the 7 battleground states (Arizona, Georgia, Nevada, North Carolina, Michigan, Pennsylvania, Wisconsin).
+#| tbl-cap: Polling averages for Harris and Trump at the national level and at the state level for the states included in the polling dataset show a narrow popular vote lead for Vice President Harris and extremely close races in the 7 battleground states (Arizona, Georgia, Nevada, North Carolina, Michigan, Pennsylvania, Wisconsin as of October 29, 2024.
 #| echo: false
 #| warning: false
 #| message: false
@@ -125,13 +125,15 @@ polling_table <- polling_averages %>%
 kable(polling_table, format = "html", digits = 2) 
 ```
 
-Based on our presidential polling data from @fivethirtyeight Vice President Harris leads former President Trump in the popular vote 50.5% to 48.0%. The margins in the seven battleground states are tight, with Vice President Harris leading in Nevada, Michigan, Wisconsin, and Nebraska's second congressional district and former President Trump leading in Arizona, Georgia, North Carolina. The two candidates are tied in Pennsylvania. The data set also includes state-level polls from likely Democratic states (Minnesota, New Hampshire, Virginia) and likely Republican states (Florida, Missouri, Montana, Nebraska, Ohio, Texas) that are not expected to determine the winner of the election [@270towin].
+Based on our presidential polling data from @fivethirtyeight Vice President Harris leads former President Trump in the popular vote 50.5% to 48.0%. The margins in the seven battleground states are tight, with Vice President Harris leading in Nevada, Michigan, Wisconsin, and Nebraska's second congressional district and former President Trump leading in Arizona, Georgia, North Carolina. The two candidates are tied in Pennsylvania. The data set also includes state-level polls from likely Democratic states (Minnesota, New Hampshire, Virginia) and likely Republican states (Florida, Missouri, Montana, Nebraska, Ohio, Texas) that are not expected to determine the winner of the election [@270towin]. Support percentages for Harris and Trump are closer, but still have some variation among the seven battleground states. Harris' support in five of the seven battleground states is lower than her national support, while Trump's support in four of the seven battleground states is higher than his national support.
 
-Since President Biden ended his re-election campaign and Vice President Harris became the Democratic Presidential nominee, the polls have shown a dead heat between Vice President Harris and former President Trump. Polling averages for the six months leading up to election day, including from before President Biden withdrew on July 21, 2024 can be found in [Appendix -@sec-Biden].
+Since President Biden ended his re-election campaign and Vice President Harris became the Democratic Presidential nominee, the polls have shown a close race between Vice President Harris and former President Trump. Polling averages for the six months leading up to election day, including from before President Biden withdrew on July 21, 2024 can be found in [Appendix -@sec-Biden]. @fig-nationalavg2 shows national polling averages for Harris and Trump since July 21 and @fig-sevenbattlegroundskamala shows state-level polling averages fo Harris and Trump in the seven battleground states and Nebraska's second congresional district.
+
+Vice President Harris surpassed former President Trump in popular vote polls shortly after becoming the presumptive Democratic nominee in late July, but her lead narrowed in mid-August and the polls have been neck-and-neck since late August.
 
 ```{r}
 #| label: fig-nationalavg2
-#| fig-cap: The lines are moving poll averages and the points are individual high-quality polls. Color shading of points indicates which candidate won the poll.
+#| fig-cap: Harris leads Trump in national popular vote polling. The lines are moving poll averages and the points are individual high-quality polls. Color shading of points indicates which candidate won the poll.
 #| echo: false
 #| warning: false
 #| message: false
@@ -147,7 +149,7 @@ ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
   geom_point(size = 1, alpha = 0.25) +            # Add points for each individual poll
   scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
   # geom_vline(xintercept = as.Date("2024-07-21"), linetype = "dashed", color = "darkgray") +
-  labs(title = "Harris Leads Trump in National Popular Vote Polling",
+  labs(title = "",
        x = "",
        y = "",
        color = "") +
@@ -159,11 +161,11 @@ ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
 
 ```{r}
 #| label: fig-sevenbattlegroundskamala
-#| fig-cap: The lines are moving poll averages for each candidate in the seven battleground states. The points are individual state-level polls. The color of each point indicates which candidate lead in the poll.
+#| fig-cap: Harris and Trump have been in a dead heat in swing state polls since July 2024. The lines are moving poll averages for each candidate in the seven battleground states. The points are individual state-level polls. The color of each point indicates which candidate lead in the poll.
 #| echo: false
 #| warning: false
 #| message: false
-#| 
+
 sevenbattlegrounds2 <- analysis_data |>
   filter((state=="Wisconsin" | state == "Michigan" | state == "Pennsylvania" |
            state == "Nevada" | state == "Arizona" | state == "Georgia" | 
@@ -175,7 +177,7 @@ ggplot(sevenbattlegrounds2, aes(x = end_date, y = pct, color = candidate_name)) 
   stat_summary(geom = "line", fun = mean) +      # Plot the mean line for polling percentages
   geom_point(size = 1, alpha = 0.15) +            # Add points for each individual poll
   scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-  labs(title = "Harris and Trump in Dead Heat in Swing State Polls",
+  labs(title = "",
        x = "",
        y = "",
        color = "") +
@@ -186,13 +188,16 @@ ggplot(sevenbattlegrounds2, aes(x = end_date, y = pct, color = candidate_name)) 
   facet_wrap(~state)
 ```
 
-### Pollster
+### Variation in support for Harris and Trump by pollster and pollscore
 
 Talk more about it.
 
 ```{r}
-#| label: fig-pollsters1
-#| fig-cap:  The lines are moving poll averages for each candidate in the seven battleground states. The points are individual polls. The color of each point indicates which candidate lead in the poll.
+```
+
+```{r}
+#| label: fig-pollsters2
+#| fig-cap:  Harris and Trump polling averages vary by pollster. The lines are moving poll averages for each candidate in the seven battleground states. The points are individual polls. The color of each point indicates which candidate lead in the poll.
 #| echo: false
 #| warning: false
 #| message: false
@@ -204,7 +209,7 @@ ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
   stat_summary(geom = "line", fun = mean) +      
   geom_point(size = 1, alpha = 0.25) +           
   scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-  labs(title = "Harris and Trump National Polling Averages Varied by Pollster",
+  labs(title = "",
        x = "",
        y = "",
        color = "") +
@@ -216,8 +221,8 @@ ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
   facet_wrap(~pollster)
 ```
 
-### Pollscore
 
+@tbl-pollscore-table shows the different pollscores that appear in our dataset and how often they appear.
 ```{r}
 #| label: tbl-pollscore-table
 #| tbl-cap: Only high-quality datasets with a numeric grade of at least 3.0 were included, so the polls included all have good pollscores. Negative/lower pollscores are better.
@@ -252,16 +257,16 @@ avg_pollscore_table <- analysis_data2 %>%
   arrange(desc(avg_pollscore))
 
 # Display the table
-kable(avg_pollscore_table, col.names = c("Pollster", "Candidate", "Average Pollscore"))
+kable(avg_pollscore_table, col.names = c("Pollster", "Pollscore", "Numeric Grade"))
 ```
 
 # Model {#sec-model}
 
-The goal of our modeling strategy is to use a Bayesian analysis model to investigate the relationship between the percentage of voters in a poll who support Vice President Harris or Former President Trump and the date the poll was conducted, the state (or if it was a national poll), the pollster who conducted the poll, and the pollscore it received. Model details and diagnostics are presented in [Appendix -@sec-model-details].
+The goal of our modeling strategy is to use a Bayesian model to investigate the relationship between the percentage of voters in a poll who support Vice President Harris or Former President Trump and the date the poll was conducted, the state (or if it was a national poll), the pollster who conducted the poll, and the pollscore it received. Model details and diagnostics are presented in [Appendix -@sec-model-details]. We use two Bayesian regression models, one each to model the percentage of voters supporting Vice President Harris, $pct\_harris$ and the percentage of voters supporting former President Trump, $pct\_trump$.
 
-We use two Bayesian regression models, one each to model the percentage of voters supporting Vice President Harris, $pct\_harris$ and the percentage of voters supporting former President Trump, $pct\_trump$.
+The models to predict $pct\_harris$ and $pct\_trump$ both use the following predictors:
 
-The models to predict $pct\_harris$ and $pct\_trump$ both use the following predictors: - `end_date_num`: the number of days since July 21, 2024, when President Biden ended his re-election campaign and endorsed Vice President Harris. This is the spline term; it uses an spline with 5 degrees of freedom to model changes in $pct\_harris$ (in the Harris model) and $pct\_trump$ (in the Trump model) over time.
+-    `end_date_num`: the number of days since July 21, 2024, when President Biden ended his re-election campaign and endorsed Vice President Harris. This is the spline term; it uses an spline with 5 degrees of freedom to model changes in $pct\_harris$ (in the Harris model) and $pct\_trump$ (in the Trump model) over time.
 
 -   `state`: accounts for the change in $pct\_harris$ and $pct\_trump$ at the state-level for a particular state or at the national level.
 
@@ -269,10 +274,11 @@ The models to predict $pct\_harris$ and $pct\_trump$ both use the following pred
 
 -   `pollscore:`adjusts for the pollscore rating, which is the Predictive Optimization of Latent skill Level in Surveys, Considering Overall Record, Empirically, calculated by averaging the predictive error and predictive bias of a poll [@Morris538].
 
-## Model set-up
+## Model set-up {#sec-modelsetup}
 
-Define $pct\_harris_i$ as the percentage of voters supporting Vice President Harris and $pct\_trump_i$ as the percentage of voters supporting former President Trump.
+Define $pct\_harris_i$ as the percentage of voters supporting Vice President Harris and $pct\_trump_i$ as the percentage of voters supporting former President Trump in the poll with unique `poll_id`=*i*.
 
+Harris model:
 ```{=tex}
 \begin{align*} 
 pct\_harris_i &= \beta_0 + \beta_1 \cdot ns(end\_date\_num_i, df=5) + \beta_2 \cdot state_i + \beta_3 \cdot pollster_i + \beta_4 pollscore_i \\
@@ -283,6 +289,8 @@ pct\_harris_i &= \beta_0 + \beta_1 \cdot ns(end\_date\_num_i, df=5) + \beta_2 \c
 \beta_4 &\sim \mbox{Normal}(0, 5) 
 \end{align*}
 ```
+
+Trump model:
 ```{=tex}
 \begin{align*} 
 pct\_trump_i &= \beta_0 + \beta_1 \cdot ns(end\_date\_num_i, df=5) + \beta_2 \cdot state_i + \beta_3 \cdot pollster_i + \beta_4 pollscore_i \\
@@ -297,11 +305,26 @@ The model is run in R [@citeR] using the `rstanarm` package of @rstanarm. The de
 
 ### Model justification
 
-We used Bayesian regression models with ... to predict support for Harris and Trump ...
+We use separate Bayesian regression models with the same predictors to estimate $pct\_harris$ and $pct\_trump$.  
+
+because using only one model to predict support for Harris ($pct\_harris$) and calculating support for Trump, $pct\_trump$, as 100% - $pct\_harris$, or vice versa, would be insufficient and lead to inaccurate results because there are third-party candidates who will receive a small percentage of the vote nationally and in each of the battleground states. It is possible for either candidate to win the popular vote or a swing state with less than 50% of the vote because of third-party candidates, and simply assuming that  $pct\_trump$ = 1 - $pct\_harris$ (or vice versa) would not account for this. In 2020, President Biden won Arizona with and Georgia with. In 2016, Hillary Clinton beat former President Trump in the popular vote % to %.
+
+We used the default priors from `rstanarm` in both our models because using a normal prior with $\mu=50$ and $\sigma=10$ for the intercept of each model allows us to reflect the central tendencies of $pct\_harris$ and $pct\_trump$ and the prior knowledge from the @fivethirtyeight presidential polls that show a close race between Vice President Harris at the national popular vote level and in each of the seven battleground states [@rstanarm].
+
+Model validation and checking results can be found in [Appendix -@sec-model-details]
+
+### Alternative model considered
+We initially used only one Bayesian regression model to predict $pct\_harris$ with `end_days_num` (spline term), `state`, `pollster`, and `pollscore` as predictors. We then calculated $pct\_trump$ as 1 - $pct\_harris$. This approach was insufficient and may have produced misleading or inaccurate results because there are third-party candidates who will receive a small percentage of the vote nationally and in each state, so Harris or Trump could win a state or the popular vote with less than 50%. 
+
+### Model weaknesses and limitations
+A limitation of our model is ...Support for Harris at a given time is not a predictor for support for Trump and vice versa
+The models used to predict support for Harris and Trump do not consider support for the other candidate at any given time. Support for Harris likely has a negative relationship with support for Trump; when support for Harris increases, support for Trump likely decreases. Third party candidates also matter when quantifying this and our models do not consider them at all.
+
+Another weakness in our model is the fact that it does not give higher-quality polls more weight or influence. Our A next step might be to give polls with a larger sample size or better pollscore more influence.
 
 # Results {#sec-results}
 
-The model results and model summary are presented in [Appendix -@sec-model-details].
+<!-- The model results and model summary are presented in [Appendix -@sec-model-details]. -->
 
 ```{r}
 #| echo: false
@@ -319,9 +342,8 @@ trump_model <-
 ```
 
 ## National Popular Vote Results
-
-Popular vote prediction after applying the Harris and Trump models.
-
+<!-- Popular vote prediction after applying the Harris and Trump models. -->
+We applied the Harris model and the Trump model defined in @sec-modelsetup to predict candidate's share of the national popular vote.
 ```{r}
 #| echo: false
 #| eval: true
@@ -542,7 +564,7 @@ ggplot() +
   labs(
     x = "Days since Biden withdrew",
     y = "",
-    title = "Harris leads Trump in Popular Vote"
+    title = ""
   ) +
   theme_minimal() +
   scale_y_continuous(labels = scales::percent_format(scale = 1)) +
@@ -550,7 +572,7 @@ ggplot() +
   scale_fill_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
       guides(
       color = guide_legend(
-        title = "Candidate", 
+        title = "", 
         override.aes = list(fill = NA, linetype = 1)
       ),
       fill = "none"
@@ -560,6 +582,8 @@ ggplot() +
 ## State-Level Results for the Seven Battleground States and Nebraska's Second Congressional District
 
 Vice President Harris starts out with 225 electoral college votes from states that went to both Hillary Clinton in 2016 and Joe Biden in 2020 [@270towin], including: . These states are considered safe or likely Democrat and available poling from @fivethirtyeight shows Vice President Harris with a lead outside the five percent margin of error and in most cases, a double-digit lead. Former President Trump starts out with 219 electoral college votes from states that he won in both 2016 and 2020 [@270towin], from the following states: . These states are considered safe or likely Republican and available polling data from @fivethirtyeight shows former President Trump with a lead outside the five percent margin of error, and in most cases, a double-digit lead. Therefore, the results of the Bayesian models presented in @sec-model focus on estimating support for Vice President Harris and former President Trump in Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, Pennsylvania, and Nebraska's second congressional district, which are worth a total of 94 electoral votes [@270towin].
+
+We applied the Harris model and the Trump model defined in @sec-modelsetup at the state-level to predict the percentage of the vote that each candidate will receive in each of the seven battleground states. This will allow us to predict the winner of the electoral college and who will become the 47th President. @fig-swingresults shows the results of applying the Harris and Trump Bayesian models with spline at the state-level over time.
 
 ```{r}
 #| echo: false
@@ -709,7 +733,7 @@ print(wi)
 print(ne2)
 ```
 
-@fig-swingresults shows former President Trump leading in Arizona, Nevada, Georgia, and North Carolina and Vice President Harris leading in Michigan, Wisconsin, Pennsylvania, and Nebraska's second congressional district. If these results hold on election night, Vice President Harris would defeat former President Trump in the electoral college with exactly 270 electoral votes, compared to Trump's 268 electoral votes. Based on the results of the Bayesian models to predict support for Harris and Trump, Vice President Harris is likely to win Nebraska's second congressional district and its single electoral vote, but it is within the 5-point margin of error for either candidate to win any of the seven battleground states. This means that it is within the margin of error for Harris or Trump to win any combination of the seven battleground states, ranging from none of them to all of them.
+@fig-swingresults shows former President Trump leading in Arizona, Nevada, Georgia, and North Carolina and Vice President Harris leading in Michigan, Wisconsin, Pennsylvania, and Nebraska's second congressional district as of October 29, 2024. If these results hold on election night, Vice President Harris would defeat former President Trump in the electoral college with exactly 270 electoral votes, compared to Trump's 268 electoral votes. Based on the results of the Bayesian models to predict support for Harris and Trump, Vice President Harris is likely to win Nebraska's second congressional district and its single electoral vote, but it is within the 5-point margin of error for either candidate to win any of the seven battleground states. This means that it is within the margin of error for Harris or Trump to win any combination of the seven battleground states, ranging from none of them to all of them. If Vice President Harris wins all seven battleground states, plus Nebraska-2, she would defeat former President Trump in the electoral college 319 to 219. If former President Trump wins all seven battleground states and loses Nebraska-2, he would defeat Vice President Harris in the electoral college 313 to 225. The electoral college results that fall within the range of likely values are summarized in
 
 ```{r}
 #| echo: false
@@ -895,7 +919,7 @@ Biden's withdrawal, use of two models, no third-party candidates, only national 
 
 The target population for our idealized survey is likely voters in the United States. We will use the L2 voter database from @L2 to build a representative sampling frame. The L2 voter database is one of the most trusted sources for enhanced voter data and it includes detailed demographics and voting history data [@L2]. Using this data set is the first step towards ensuring that our sample aligns with the general electorate and is representative of likely voters so that we can sample precisely.
 
-We will use a stratified sampling approach to closely examine voter demographics. Stratified sampling allows us to look at every stratum and carry out simple random sampling with those strata [@tswd]. Its main goal is to ensure that every strata of the population is represented [@Neyman1934]. We selected stratified sampling because it will allow us to have representation within the subgroups that we are interested in and it has a reduced sampling error and improved accuracy rate [@tswd]. We considered simple random sampling, but ultimately chose stratified sampling instead because it tends to produce more precise accurates when used to forecast U.S. elections [@pewhacking]. The U.S. election is decided by the electoral college, not the popular vote so we will oversample from the seven key battleground states that are expected to decide the 2024 election: Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania [@fivethirtyeight]. Oversampling from the swing states will allow us to put an emphasis on forecasting their results and increase the accuracy of our electoral college estimate. Our target sample size of 100,000 respondents will provide a margin of error of 2% at a 95% confidence level; this will allow us to be precise while still accounting for budgetary constraints [@pewhacking].
+We will use a stratified sampling approach to closely examine voter demographics. Stratified sampling allows us to look at every stratum and carry out simple random sampling with those strata [@tswd]. Its main goal is to ensure that every strata of the population is represented [@Neyman1934]. We selected stratified sampling because it will allow us to have representation within the subgroups that we are interested in and it has a reduced sampling error and improved accuracy rate [@tswd]. We considered simple random sampling, but ultimately chose stratified sampling instead because it tends to produce more precise accurates when used to forecast U.S. elections [@pewhacking]. The U.S. election is decided by the electoral college, not the popular vote so we will oversample from the seven battleground states that are expected to decide the 2024 election: Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania [@fivethirtyeight]. Oversampling from the swing states will allow us to put an emphasis on forecasting their results and increase the accuracy of our electoral college estimate. Our target sample size of 100,000 respondents will provide a margin of error of 2% at a 95% confidence level; this will allow us to be precise while still accounting for budgetary constraints [@pewhacking].
 
 ## Respondent recruitment
 
@@ -974,7 +998,7 @@ Thank you for your response! Your answers have successfully been recorded.
 
 ## Overview
 
-The Siena College/New York Times (Times/Siena) poll is a collaboration between the New York Times and the Siena College Research Institute that aims to capture voter sentiment in key battleground states and at a national level [@nytsiena]. Its accuracy has made it a critical poll for predicting U.S. election results. The NYT/Siena poll uses live poll interviews to reach a representative sample of voters and measure their political preferences, views, and issue priorities [@nytsiena].
+The Siena College/New York Times (Times/Siena) poll is a collaboration between the New York Times and the Siena College Research Institute that aims to capture voter sentiment in battleground states and at a national level [@nytsiena]. Its accuracy has made it a highly regarded poll for predicting U.S. election results. The NYT/Siena poll uses live poll interviews to reach a representative sample of voters and measure their political preferences, views, and issue priorities [@nytsiena].
 
 ## Population and Sampling Frame
 
@@ -1021,7 +1045,7 @@ ggplot(national, aes(x = end_date, y = pct, color = party)) +
             hjust = 0,     # Keep it left-aligned for better placement
             size = 2.5) + 
   geom_vline(xintercept = as.Date("2024-07-21"), linetype = "dashed", color = "#A9A9A9") +
-  labs(title = "National Polling Average by Party (DEM vs REP)",
+  labs(title = "",
        x = "",
        y = "",
        color = "") +
@@ -1053,7 +1077,7 @@ ggplot(sevenbattlegrounds, aes(x = end_date, y = pct, color = party)) +
             hjust = 0,     # Keep it left-aligned for better placement
             size = 1.7) +
   geom_vline(xintercept = as.Date("2024-07-21"), linetype = "dashed", color = "#A9A9A9") +
-  labs(title = "National Polling Average by Party (DEM vs REP)",
+  labs(title = "",
        x = "",
        y = "",
        color = "") +
