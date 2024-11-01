@@ -3880,3 +3880,53 @@ save_kable(kable(avg_pollscore_table), "table_image.png")
 Then insert table_image.png into your document as an image.
 
 One of these solutions should resolve the PDF output issue!
+
+Share
+
+
+You said:
+make the model summary table smaller #| echo: false
+#| eval: true
+#| label: tbl-model-summary
+#| tbl-cap: "Explanatory models of support for Harris and Trump based on end date, state, pollster, and pollscore"
+#| warning: false
+
+modelsummary::modelsummary(
+  list(
+    "Harris" = harris_model,
+    "Trump" = trump_model
+  ),
+  statistic = "mad",
+  fmt = 2
+)
+ChatGPT said:
+ChatGPT
+To make your table smaller, you can use the gtsummary::tbl_regression() function or customize modelsummary::modelsummary() by adjusting the output and gof_map parameters, which allow for fine-tuning of the table layout. Here's how to make a more compact table using modelsummary with options to limit the output to essential information:
+
+r
+Copy code
+#| echo: false
+#| eval: true
+#| label: tbl-model-summary
+#| tbl-cap: "Explanatory models of support for Harris and Trump based on end date, state, pollster, and pollscore"
+#| warning: false
+
+modelsummary::modelsummary(
+  list(
+    "Harris" = harris_model,
+    "Trump" = trump_model
+  ),
+  statistic = "mad",
+  fmt = 2,
+  gof_map = c("nobs", "r.squared"),   # Customize to only show specific goodness-of-fit measures
+  output = "kableExtra"               # Use kableExtra for further formatting if needed
+) %>%
+  kableExtra::kable_styling(font_size = 9) # Adjust font size to make table smaller
+This code reduces the amount of information shown in the table by limiting goodness-of-fit metrics to just "nobs" and "r.squared" and decreases the font size to 9 for a more compact display. Adjust gof_map as needed to include additional fit statistics, or further modify the layout using kableExtra.
+
+
+
+
+
+
+
