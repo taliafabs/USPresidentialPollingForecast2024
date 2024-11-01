@@ -11,7 +11,7 @@ date-format: long
 abstract: "The U.S. Presidential election will take place on Tuesday, November 5th with Vice President Kamala Harris and former President Donald Trump in a close race for the White House. In this paper, we used the poll-of-polls method and applied a Bayesian model to estimate the winner of the popular vote and the winner of each of the seven battleground states: Arizona, Georgia, Nevada, North Carolina, Michigan, Wisconsin, and Pennsylvania, and Nebraska's second congressional disctict. Using the results of our poll-of-polls analysis, we predict that Vice President Harris will win the popular vote, 48.3% to 47.1% and the electoral college 270 to 268 by winning three of the seven battleground states, Wisconsin, Michigan, and Pennsylvania. Our analysis shows that the race is extremely tight and former President Trump winning the popular vote, electoral college, or both is well within the margin of error. Our results show a statistical tie when we account for error, bias, weaknesses, and limitations."
 format: pdf
 number-sections: true
-bibliography: references.bib
+bibliography: references.bib 
 ---
 
 ```{r}
