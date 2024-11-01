@@ -129,7 +129,7 @@ Since President Biden ended his re-election campaign and Vice President Harris b
 
 ```{r}
 #| label: fig-nationalavg2
-#| fig-cap: National popular vote polling averages for Harris and Trump since Biden ended his re-election campaign on July 21, 2024. As of October 29, 2024, Harris has a narrow lead over Trump.
+#| fig-cap: The lines are moving poll averages and the points are individual high-quality polls. Color shading of points indicates which candidate won the poll.
 #| echo: false
 #| warning: false
 #| message: false
@@ -145,7 +145,7 @@ ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
   geom_point(size = 1, alpha = 0.25) +            # Add points for each individual poll
   scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
   # geom_vline(xintercept = as.Date("2024-07-21"), linetype = "dashed", color = "darkgray") +
-  labs(title = "National Polling Average Harris v Trump",
+  labs(title = "Harris Leads Trump in National Popular Vote Polling",
        x = "",
        y = "",
        color = "") +
@@ -157,7 +157,7 @@ ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
 
 ```{r}
 #| label: fig-sevenbattlegroundskamala
-#| fig-cap: seven battleground states with harris
+#| fig-cap: The lines are moving poll averages for each candidate in the seven battleground states. The points are individual state-level polls. The color of each point indicates which candidate lead in the poll.
 #| echo: false
 #| warning: false
 #| message: false
@@ -173,7 +173,7 @@ ggplot(sevenbattlegrounds2, aes(x = end_date, y = pct, color = candidate_name)) 
   stat_summary(geom = "line", fun = mean) +      # Plot the mean line for polling percentages
   geom_point(size = 1, alpha = 0.15) +            # Add points for each individual poll
   scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-  labs(title = "swing states",
+  labs(title = "Harris and Trump in Dead Heat in Battleground States",
        x = "",
        y = "",
        color = "") +
@@ -190,7 +190,7 @@ Talk more about it.
 
 ```{r}
 #| label: fig-pollsters1
-#| fig-cap: Pollsters caption
+#| fig-cap:  The lines are moving poll averages for each candidate in the seven battleground states. The points are individual polls. The color of each point indicates which candidate lead in the poll.
 #| echo: false
 #| warning: false
 #| message: false
@@ -203,7 +203,7 @@ ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
   geom_point(size = 1, alpha = 0.25) +            # Add points for each individual poll
   scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
   # geom_vline(xintercept = as.Date("2024-07-21"), linetype = "dashed", color = "darkgray") +
-  labs(title = "National Polling Average Harris v Trump by Pollster",
+  labs(title = "Harris and Trump National Polling Averages Varied by Pollster",
        x = "",
        y = "",
        color = "") +
@@ -298,9 +298,11 @@ pct\_trump_i &= \beta_0 + \beta_1 \cdot ns(end\_date\_num_i, df=5) + \beta_2 \cd
 \beta_4 &\sim \mbox{Normal}(0, 5) 
 \end{align*}
 ```
+
 The model is run in R [@citeR] using the `rstanarm` package of @rstanarm. The default priors from `rstanarm` are used for both GLM Bayesian models. The intercept normal prior with $\mu=50$ and $\sigma=10$ reflects the central tendencies of Harris and Trump's polling percentages, influenced by prior knowledge and the predictors use a normal prior with $\mu=0$ and $\sigma=5$ [@rstanarm].
 
 ### Model justification
+We used Bayesian regression models with ... to predict support for Harris and Trump ...
 
 # Results {#sec-results}
 
@@ -493,6 +495,8 @@ trump_spline_plot <- ggplot(trump_analysis_data, aes(x = end_date_num, y = pct_t
 #| eval: true
 #| warning: false
 #| message: false
+#| fig-label: fig-nationalresults
+#| fig-cap: Results of applying Bayesian regression models with spline to predict support for Harris and Trump show that Harris is leading the popular vote 48.3% to 47.1% as of October 29. Lines are moving averages from applying the model, points are individual polls, and the shaded areas show the range of values within the margin of error.
 
 # Add a candidate column with full names to each summary data frame
 harris_pred_summary <- harris_pred_summary %>%
@@ -505,7 +509,7 @@ trump_pred_summary <- trump_pred_summary %>%
 combined_pred_summary <- bind_rows(harris_pred_summary, trump_pred_summary)
 
 # Plot the combined data with both candidates' lines and ribbons
-az_plot1 <- ggplot() +
+ggplot() +
   # Plot the original data points for Harris
   geom_point(data = harris_analysis_data, aes(x = end_date_num, y = pct_harris, color = pollster), alpha = 0.6) +
   # Plot the original data points for Trump
@@ -543,7 +547,7 @@ az_plot1 <- ggplot() +
   labs(
     x = "Days since Biden withdrew",
     y = "",
-    title = "National Poll % Over Time with Spline Fit"
+    title = "Harris leads Trump in Popular Vote"
   ) +
   theme_minimal() +
   scale_y_continuous(labels = scales::percent_format(scale = 1)) +
@@ -686,7 +690,7 @@ for (state in swing_states) {
 #| message: false
 #| warning: false
 #| label: fig-swingresults
-#| fig-cap: "On average, Trump has had narrow leads in Arizona, Georgia, Nevada, and North Carolina, while Harris has narrow leads in Michigan, Pennsylvania, and Wisconsin."
+#| fig-cap: "The lines are the weighted moving averages resulting from applying the Bayesian model with spline, dots are individual state-level polls, and shaded areas show range of values within the margin of error."
 #| fig-subcap: ["Avg Trump lead +1.61", "Avg Trump lead +3.01", "Avg Trump lead +0.37","Avg Trump lead +0.44", "Avg Harris lead +2.22", "Avg Harris lead +2.57", "Avg Harris lead +3.31", "Avg Harris lead +11.87"] 
 #| layout-ncol: 2
 #| layout-nrow: 4
@@ -855,7 +859,7 @@ ggplot() +
     inherit.aes = FALSE
   ) +
   labs(
-    x = "Days since earliest poll",
+    x = "Days since Biden withdrew",
     y = "",
     title = "Poll Percentage over Time with Spline Fit (Kamala Harris vs Donald Trump) Arizona"
   ) +
