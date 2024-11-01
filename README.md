@@ -20,7 +20,3 @@ The repository is structured as follows:
 
 Aspects of this code were written and debugged with the help of a large language model, ChatGPT. The entire interaction history with ChatGPT is available in other/llmusage.txt. Comments indicating the use of ChatGPT are included in the parts of the code that were written using the assistance of ChatGPT.
 
-## Some checks
-
-- [ ] Remove files that you're not using
-- [ ] Remove this checklist
