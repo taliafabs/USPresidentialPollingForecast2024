@@ -18,7 +18,8 @@ iowa,6
 kansas,6
 kentucky,8
 louisiana,8
-maine,4
+maine,3
+maine-2,1
 maryland,10
 massachusetts,11
 michigan,15
@@ -26,7 +27,8 @@ minnesota,10
 mississippi,6
 missouri,10
 montana,4
-nebraska,5
+nebraska,4,
+nebraska-2,1
 nevada,6
 new hampshire,4
 new jersey,14
