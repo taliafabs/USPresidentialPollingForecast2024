@@ -781,9 +781,15 @@ Thank you for your response! Your answers have successfully been recorded.
 
 ## Overview
 
+The Siena College/New York Times (Times/Siena) poll is a collaboration between the New York Times and the Siena College Research Institute that aims to capture voter sentiment in key battleground states and at a national level [@nytsiena]. Its accuracy has made it a critical poll for predicting U.S. election results. The NYT/Siena poll uses live poll interviews to reach a representative sample of voters and measure their political preferences, views, and issue priorities [@nytsiena].
+
 ## Population and Sampling Frame
 
+The target population for the Times/Siena poll is registered voters and likely voters in the United States. Some Times/Siena polls have a target population of registered voters, while others use likely voters [@nytsienacrosstabs]. They put an emphasis on gathering national representations and state-specific samples in the seven key battleground states that decided the 2020 presidential election and are expected to decide the 2024 presidential election: Arizona, Nevada, Georgia, North Carolina, Michigan, Wisconsin, and Pennsylvania [@nytsiena]. The sampling frame is drawn from various voter registration databases; this helps ensure precise targeting and that the sample reflects the demographics of likely voters in the upcoming U.S. election [@nytsiena].
+
 ## Respondent Recruitment Strategy
+
+Times/Siena recruits respondents for its poll at random, from a national list of registered voters [@nytsiena]
 
 ## Sampling Approch and Trade-offs
 
