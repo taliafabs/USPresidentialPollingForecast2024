@@ -1,4 +1,4 @@
-# U.S. Presidential Polling Forecast 2024
+# Forecasting the 2024 U.S. Presidential Election Using Poll of Polls Methodology and Bayesian Model Analysis
 
 ## Overview
 
