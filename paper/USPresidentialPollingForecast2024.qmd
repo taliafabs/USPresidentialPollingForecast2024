@@ -47,11 +47,11 @@ trump_analysis_data <- arrow::read_parquet("data/02-analysis_data/trump-analysis
 
 <!-- Overview paragraph -->
 
-Tuesday November 5th, 2024, Americans will head to the polls to elect their 47th president. Vice President Kamala Harris and former President Trump have been in a dead heat in the polls since Vice President Harris became the Democratic nominee after 82-year-old President Joe Biden made the historic and unprecedented decision to end his re-election campaign on July 21, 2024. President Biden immediately endorsed Vice President Harris after ending his campaign on July 21, making her the presumptive Democratic nominee. Vice President Harris officially became the Democratic nominee on August 2, 2024.
+On Tuesday November 5, 2024, Americans will head to the polls to elect their 47th president. Polling data has shown a tight race between VIce President Kamala Harris and former President Donald Trump since Vice President Harris became the Democratic nominee after 82-year-old President Joe Biden made the historic and unprecedented decision to end his re-election campaign on July 21, 2024. President Biden immediately endorsed Vice President Harris after ending his campaign on July 21, making her the presumptive Democratic nominee. Vice President Harris officially became the Democratic nominee on August 2, 2024. This paper uses presidential polling data from after President Joe Biden ended his re-election campaign and Vice President Harris became the presumptive democratic nominee and Bayesian analysis models to estimate the percentage of voters supporting Vice President Harris and former President Trump.
 
-<!-- Estimand paragraph -->
+<!-- Estimands paragraph -->
 
-This paper uses presidential polling data from after President Joe Biden ended his re-election campaign and Vice President Harris became the presumptive democratic nominee and Bayesian analysis models to estimate the percentage of voters supporting Vice President Harris and former President Trump. The estimands are the percentages of voters supporting Vice President Harris and former President Trump at the national level, in each of the seven key battleground states (Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania), and in Nebraska's second congressional district.
+The estimands are the percentages of voters supporting Vice President Harris and former President Trump at the national level, in each of the seven key battleground states (Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania), and in Nebraska's second congressional district.
 
 <!-- Results paragraph -->
 
@@ -59,19 +59,17 @@ Based on the results of applying our Bayesian model, we estimate that Vice Presi
 
 <!-- Why it matters paragraph -->
 
-Vice President Harris and former President Trump present staunchly different policies and visions for the future of the United States. Vice President Harris has campaigned on reproductive rights, supporting small businesses, building more affordable housing, expanding medicare coverage, and cutting taxes for the middle class. Former President Trump has campaigned on a 200% tariff, ending foreign aid to Ukraine, and securing the Southern border despite instructing his allies in the U.S. Senate to oppose a bipartisan border bill. Women make up 50% of the U.S. population, but all 46 presidents so far have been men. Only one person of color, Barack Obama, has ever been elected president.
+Vice President Harris and former President Trump have presented staunchly different policies and visions for the future of the United States. Vice President Harris has campaigned on reproductive rights, supporting small businesses, building more affordable housing, expanding medicare coverage, and cutting taxes for the middle class. Former President Trump has campaigned on a 200% tariff, ending foreign aid to Ukraine, and securing the Southern border despite instructing his allies in the U.S. Senate to oppose a bipartisan border bill. Women make up 50% of the U.S. population, but all 46 presidents so far have been men. Only one person of color, Barack Obama, has ever been elected president.
 
-The remainder of this paper is structured as follows. @sec-data contains an overview of the polling dataset from @fivethirtyeight that was used, visualizations of different variables, and summary statistics. @sec-model contains the Bayesian regression models used to predict the percentages of voters that will support Vice President Harris and former President Trump. @sec-results contains tables and visualizations that present the national popular vote and state-level results after applying the Bayesian regression model model. @sec-discussion contains detailed discussions about the .... [Appendix -@sec-idealized-meth] contains a thorough discussion about an idealized methodology that we would use if given a \$100,000 budget to build a survey to forecast the 2024 U.S. election and our idealized survey questions. [Appendix -@sec-pollster-meth] contains a deep-dive into and evaluation of the methodologies used in the Siena College/New York Times poll.
-
-The statistical programming language [@citeR] and the `tidyverse`, `janitor`, `ggplot`, `kableExtra`, `arrow`, `rstanarm`, and `spline` packages were used to perform this election forecast, clean the dataset, build the Bayesian regression models, create data visualizations and tables, and apply the model.
+The remainder of this paper is structured as follows. @sec-data contains an overview of the polling dataset from @fivethirtyeight that was used, visualizations of different variables, and summary statistics. @sec-model contains the Bayesian regression models used to predict the percentages of voters that will support Vice President Harris and former President Trump. @sec-results contains tables and visualizations that present the national popular vote and state-level results after applying the Bayesian regression model model. @sec-discussion contains detailed discussions about the .... [Appendix -@sec-idealized-meth] contains a thorough discussion about an idealized methodology that we would use if given a \$100,000 budget to build a survey to forecast the 2024 U.S. election and our idealized survey questions. [Appendix -@sec-pollster-meth] contains a deep-dive into and evaluation of the methodologies used in the Siena College/New York Times poll. The statistical programming language [@citeR] and the `tidyverse`, `janitor`, `ggplot`, `kableExtra`, `arrow`, `rstanarm`, and `spline` packages were used to perform this election forecast, clean the dataset, build the Bayesian regression models, create data visualizations and tables, and apply the model.
 
 # Data {#sec-data}
 
 ## Overview
 
-This presidential election forecast was performed using the statistical programming language R [@citeR] and Presidential general election polling data from FiveThirtyEight [@fivethirtyeight]. The data was downloaded on October 29, 2024; polling data released after this date was not considered anywhere in this paper. The presidential polls dataset from FiveThirtyEight contains national polls and state-level polls for each of the 50 states and congressional districts in Maine and Nebraska [@fivethirtyeight]. The polls are conducted by various pollsters, including YouGov, Siena/NYT, CES/YouGov, Marquette Law School, The Washington Post, and McCourtney Institute/YouGov. We analyze national data and state-level data for the seven swing states that are expected to determine the results of this election: Michigan, Wisconsin, Pennsylvania, North Carolina, Georgia, Nevada, and Arizona.
+The data was downloaded on October 29, 2024; polling data released after this date was not considered anywhere in this paper. The presidential polls dataset from FiveThirtyEight contains national polls and state-level polls for each of the 50 states and congressional districts in Maine and Nebraska [@fivethirtyeight]. The polls are conducted by various pollsters, including YouGov, Siena/NYT, CES/YouGov, Marquette Law School, The Washington Post, and McCourtney Institute/YouGov. We analyze national data and state-level data for the seven swing states that are expected to determine the results of this election: Michigan, Wisconsin, Pennsylvania, North Carolina, Georgia, Nevada, and Arizona.
 
-We cleaned this dataset to only include high-quality polls at the national and state-level conducted on or after July 21, 2024. We determined which polls were high-quality based on the numeric grade, and cleaned the dataset to include only polls with a numeric grade of at least 3.0. Polls with a rating (`numeric_grade`) of 3.0 are conducted by the best pollsters in the United States and score in the 99th percentile or better for accuracy and transparency [@MorrisBestPollsters]. We included only polls where the `population` is likely voters. If a poll in the dataset from @fivethirtyeight includes multiple populations, the narrowest one is used (likely voters over registered voters and registered voters over all American adults) [@Morris538].
+We cleaned this dataset to only include high-quality polls at the national and state-level conducted on or after July 21, 2024, where the `population` is likely voters. We determined which polls were high-quality based on the numeric grade, and cleaned the dataset to include only polls with a numeric grade of at least 3.0. Polls with a rating (`numeric_grade`) of 3.0 are conducted by the best pollsters in the United States and score in the 99th percentile or better for accuracy and transparency [@MorrisBestPollsters]. If a poll in the dataset from @fivethirtyeight includes multiple populations, the narrowest one is used (likely voters over registered voters and registered voters over all American adults) [@Morris538].
 
 ## Measurement
 
@@ -83,11 +81,11 @@ Our dataset from @fivethirtyeight is a a collection of presidential polls from d
 
 ## Outcome and predictor variables
 
-We will use `end_date` (the date that a poll was completed), `state`, `pollster`, and `pollscore` to predict support for Vice President Harris and former President Trump at the national level, at the state level for each of the seven battleground states, and in Nebraska's second congressional district in @sec-model. The tables and visualizations below present our exploratory data analysis and illustrate possible relationships between the variables and support for Vice President Harris and former President Trump.
+We will use `end_date` (the date that a poll was completed), `state`, `pollster`, and `pollscore` to predict support for Vice President Harris and former President Trump at the national level, at the state level for each of the seven battleground states, and in Nebraska's second congressional district in @sec-model. The tables and visualizations below present our exploratory data analysis and possible relationships between the predictor variables and support for Vice President Harris and former President Trump.
 
 ### National and swing state polling averages over time
 
-The percentage of the electorate voting for Vice President Harris and former President Trump varies by state; in some states support for Vice President Harris is higher than the national average and in others, it is lower than the national average. The 2024 presidential election is expected to be decided by seven swing states: Arizona, Georgia, Nevada, North Carolina, Wisconsin, Michigan, and Pennsylvania and Nebraska's second congressional district. Two states, Maine and Nebraska, award electoral votes by congressional district.
+The percentage of voters that support Vice President Harris and former President Trump varies by state; in some states support for Vice President Harris is higher than the national average and in others, it is lower than the national average. The 2024 presidential election is expected to be decided by seven swing states: Arizona, Georgia, Nevada, North Carolina, Wisconsin, Michigan, and Pennsylvania and Nebraska's second congressional district [@270towin]. Two states, Maine and Nebraska, award one electoral vote to the popular vote winner in each congressional district and an additional two electoral votes to the statewide popular vote winner [@270towin].
 
 ```{r}
 #| label: tbl-avgsummary
@@ -127,7 +125,7 @@ polling_table <- polling_averages %>%
 kable(polling_table, format = "html", digits = 2) 
 ```
 
-In the presidential polling data we obtained from FiveThirtyEight, Vice President Harris leads former President Trump in the popular vote 50.5% to 48.0%. The margins in the seven battleground states are tight, with Vice President Harris leading in Nevada, Michigan, and Wisconsin, and F [@fivethirtyeight]. The dataset also includes polling data from Florida, Minnesota, Missouri, Montana, Nebraska, New Hampshire, Ohio, Texas, and Virginia, but those states are not expeced to determine the results of the election.
+Based on our presidential polling data from @fivethirtyeight Vice President Harris leads former President Trump in the popular vote 50.5% to 48.0%. The margins in the seven battleground states are tight, with Vice President Harris leading in Nevada, Michigan, Wisconsin, and Nebraska's second congressional district and former President Trump leading in Arizona, Georgia, North Carolina. The two candidates are tied in Pennsylvania. The data set also includes state-level polls from likely Democratic states (Minnesota, New Hampshire, Virginia) and likely Republican states (Florida, Missouri, Montana, Nebraska, Ohio, Texas) that are not expected to determine the winner of the election [@270towin].
 
 Since President Biden ended his re-election campaign and Vice President Harris became the Democratic Presidential nominee, the polls have shown a dead heat between Vice President Harris and former President Trump. Polling averages for the six months leading up to election day, including from before President Biden withdrew on July 21, 2024 can be found in [Appendix -@sec-Biden].
 
@@ -177,7 +175,7 @@ ggplot(sevenbattlegrounds2, aes(x = end_date, y = pct, color = candidate_name)) 
   stat_summary(geom = "line", fun = mean) +      # Plot the mean line for polling percentages
   geom_point(size = 1, alpha = 0.15) +            # Add points for each individual poll
   scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-  labs(title = "Harris and Trump in Dead Heat in Battleground States",
+  labs(title = "Harris and Trump in Dead Heat in Swing State Polls",
        x = "",
        y = "",
        color = "") +
@@ -203,10 +201,9 @@ harris_versus_trump <- analysis_data |>
   filter(end_date >= as.Date("2024-07-21"))
 
 ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
-  stat_summary(geom = "line", fun = mean) +      # Plot the mean line for polling percentages
-  geom_point(size = 1, alpha = 0.25) +            # Add points for each individual poll
+  stat_summary(geom = "line", fun = mean) +      
+  geom_point(size = 1, alpha = 0.25) +           
   scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-  # geom_vline(xintercept = as.Date("2024-07-21"), linetype = "dashed", color = "darkgray") +
   labs(title = "Harris and Trump National Polling Averages Varied by Pollster",
        x = "",
        y = "",
@@ -257,12 +254,6 @@ avg_pollscore_table <- analysis_data2 %>%
 # Display the table
 kable(avg_pollscore_table, col.names = c("Pollster", "Candidate", "Average Pollscore"))
 ```
-
-<!-- ## Predictor variables -->
-
-Add graphs, tables and text.
-
-Use sub-sub-headings for each outcome variable and feel free to combine a few into one if they go together naturally.
 
 # Model {#sec-model}
 
@@ -904,7 +895,7 @@ Biden's withdrawal, use of two models, no third-party candidates, only national 
 
 The target population for our idealized survey is likely voters in the United States. We will use the L2 voter database from @L2 to build a representative sampling frame. The L2 voter database is one of the most trusted sources for enhanced voter data and it includes detailed demographics and voting history data [@L2]. Using this data set is the first step towards ensuring that our sample aligns with the general electorate and is representative of likely voters so that we can sample precisely.
 
-We will use a stratified sampling approach to closely examine voter demographics. Stratified sampling allows us to look at every stratum and carry out simple random sampling with those strata [@tswd] and its primary goal is to ensure that all strata of the population are represented [@Neyman1934]. We selected stratified sampling because it will allow us to have representation within the subgroups that we are interested in and it has a reduced sampling error and improved accuracy rate [@tswd]. We considered simple random sampling, but ultimately chose stratified sampling instead because it tends to produce more precise accurates when used to forecast U.S. elections [@pewhacking]. The U.S. election is decided by the electoral college, not the popular vote so we will oversample from the seven key battleground states that are expected to decide the 2024 election: Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania [@fivethirtyeight]. Oversampling from the swing states will allow us to put an emphasis on forecasting their results and increase the accuracy of our electoral college estimate. Our target sample size of 100,000 respondents will provide a margin of error of 2% at a 95% confidence level; this will allow us to be precise while still accounting for budgetary constraints [@pewhacking].
+We will use a stratified sampling approach to closely examine voter demographics. Stratified sampling allows us to look at every stratum and carry out simple random sampling with those strata [@tswd]. Its main goal is to ensure that every strata of the population is represented [@Neyman1934]. We selected stratified sampling because it will allow us to have representation within the subgroups that we are interested in and it has a reduced sampling error and improved accuracy rate [@tswd]. We considered simple random sampling, but ultimately chose stratified sampling instead because it tends to produce more precise accurates when used to forecast U.S. elections [@pewhacking]. The U.S. election is decided by the electoral college, not the popular vote so we will oversample from the seven key battleground states that are expected to decide the 2024 election: Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania [@fivethirtyeight]. Oversampling from the swing states will allow us to put an emphasis on forecasting their results and increase the accuracy of our electoral college estimate. Our target sample size of 100,000 respondents will provide a margin of error of 2% at a 95% confidence level; this will allow us to be precise while still accounting for budgetary constraints [@pewhacking].
 
 ## Respondent recruitment
 
@@ -981,11 +972,11 @@ The Siena College/New York Times (Times/Siena) poll is a collaboration between t
 
 ## Population and Sampling Frame
 
-The target population for the Times/Siena poll is registered voters and likely voters in the United States. Some Times/Siena polls have a target population of registered voters, while others use likely voters [@nytsienacrosstabs]. They put an emphasis on gathering national representations and state-specific samples in the seven key battleground states that decided the 2020 presidential election and are expected to decide the 2024 presidential election: Arizona, Nevada, Georgia, North Carolina, Michigan, Wisconsin, and Pennsylvania [@nytsiena]. The sampling frame is drawn from various voter registration databases; this helps ensure precise targeting and that the sample reflects the demographics of likely voters in the upcoming U.S. election [@nytsiena].
+The target population, defined by @tswd as the population that the Times/Siena poll aims to speak about, is registered voters and likely voters in the United States. Some polls conducted by Times/Siena have a target population of registered voters, while others use likely voters [@nytsienacrosstabs]. The sampling frame, defined by @tswd as the individuals from the target population that Times/Siena can get data about is drawn from various voter registration databases, including the L2 voter database [@nytsiena]. In polls for the 2024 presidential election, Times/Siena has put an emphasis on gathering nationally-representative and state-specific samples for the seven battleground states that decided the 2020 presidential election and are expected to decide the 2024 presidential election: Arizona, Nevada, Georgia, North Carolina, Michigan, Wisconsin, and Pennsylvania [@nytsiena]. A sampling frame that includes various voter registration databases helps ensure precise targeting and that the sample reflects the demographics of registered or likely voters in the upcoming U.S. election [@nytsiena].
 
 ## Respondent Recruitment Strategy
 
-Times/Siena recruits respondents for its poll at random, from a national list of registered voters [@nytsiena].
+Times/Siena recruits respondents for its poll at random, from a national list of registered voters gathered from various high-quality voter registration databases [@nytsiena].
 
 ## Sampling Approch and Trade-offs
 
@@ -1079,7 +1070,7 @@ Model summary is shown in @tbl-model-summary
 #| echo: false
 #| eval: true
 #| label: tbl-model-summary
-#| tbl-cap: "Explanatory models of support for Harris and Trump based on end date, state, pollster, and pollscore"
+#| tbl-cap: "Explanatory models of support for Harris and Trump based on end date (number of days since Biden ended re-election campaign on July 21, 2024), state, pollster, and pollscore"
 #| warning: false
 
 modelsummary::modelsummary(
@@ -1088,8 +1079,10 @@ modelsummary::modelsummary(
     "Trump" = trump_model
   ),
   statistic = "mad",
-  fmt = 2
-)
+  fmt = 2,
+  output = "kableExtra"    
+) %>%
+  kableExtra::kable_styling(font_size = 7) 
 ```
 
 ## Posterior predictive check
@@ -1171,11 +1164,12 @@ In @fig-ppcheckandposteriorvspriortrump-2 we compare the posterior with the prio
 #| label: fig-stanareyouokay
 #| fig-cap: "Checking the convergence of the MCMC algorithm for the Harris model"
 #| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
+#| layout-ncol: 1
 
-# plot(harris_model, "trace")
-# 
-# plot(harris_model, "rhat")
+# Assuming harris_model is a Bayesian model, use bayesplot for flexible customization
+library(bayesplot)
+plot(harris_model, "trace")
+plot(harris_model, "rhat")
 ```
 
 ### Trump Model
@@ -1192,11 +1186,10 @@ In @fig-ppcheckandposteriorvspriortrump-2 we compare the posterior with the prio
 #| label: fig-trumpdiagnostics
 #| fig-cap: "Checking the convergence of the MCMC algorithm for the Harris model"
 #| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
+#| layout-ncol: 1
 
-# plot(trump_model, "trace")
-# 
-# plot(trump_model, "rhat")
+plot(trump_model, "trace")
+plot(trump_model, "rhat")
 ```
 
 \newpage
