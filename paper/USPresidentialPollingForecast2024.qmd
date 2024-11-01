@@ -1,14 +1,14 @@
 ---
 title: "This Election is too Close to Call: Poll of Polls Methodology and Bayesian Modeling Results show a Statistical Tie in the Seven Battleground States"
-subtitle: "Forecasting the 2024 U.S. Presidential Election using FiveThirtyEight Polling Data and Poll of Polls Methodology Resulted in ..."
+subtitle: "Vice President Kamala Harris Projected to Win 270 Electoral Votes and 48% of the Popular Vote Based on Poll of Polls and Bayesian Modeling Analysis"
 author: 
   - Talia Fabregas
   - Fatimah Yunusa
   - Aliza Mithwani
 thanks: "The code and data used to perform this presidential election forecast can be found at: [https://github.com/taliafabs/USPresidentialPollingForecast2024.git](https://github.com/taliafabs/USPresidentialPollingForecast2024.git)."
-date: today
+date: October 29, 2024
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "The U.S. Presidential election will take place on Tuesday, November 5th with Vice President Kamala Harris and former President Donald Trump in a close race for the White House. In this paper, we used the poll-of-polls method and applied a Bayesian model to estimate the winner of the popular vote and the winner of each of the seven key battleground states: Arizona, Georgia, Nevada, North Carolina, Michigan, Wisconsin, and Pennsylvania, and Nebraska's second congressional disctict. Using the results of our poll-of-polls analysis, we can predict that Vice President Harris will win x% of the popular vote and carry the states of Michigan, Wisconsin, and Pennsylvania, plus Nebraska's second congressional district and former President Trump will win x% of the popular vote and the states of Arizona, Georgia, Nevada, and North Carolina. Our electoral college and swing-state predictions both fall within the margin of error;"
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -47,7 +47,7 @@ trump_analysis_data <- arrow::read_parquet("data/02-analysis_data/trump-analysis
 
 <!-- Overview paragraph -->
 
-The U.S. Presidential Election will take place on Tuesday November 5th. Vice President Kamala Harris and former President Donald Trump will vie to become the 47th President of the United States. Vice President Kamala Harris became the Democratic nominee after 82-year-old President Joe Biden made a historic and unprecedented decision to end his re-election campaign on July 21, 2024. She secured enough delegates to win the Democratic nomination on Vice President Kamala Harris and Former President Donald Trump ... President Joe Biden made the unprecedented decision to end his re-election campaign on July 21, 2024 and immediately endorsed Vice President Kamala Harris. She became the presumptive Democratic presidential nominee the same day and secured enough delegates to win the nomination on July 28.
+Every fourth year, on the first Tuesday of November, Americans head to the polls to choose their president. Next week, on Tuesday November 5th, 2024, Americans will head to the polls to elect their 47th president. At a time of unprecedented division and political polarization, ... The U.S. Presidential Election will take place on Tuesday November 5th. Vice President Kamala Harris and former President Donald Trump will vie to become the 47th President of the United States. Vice President Kamala Harris became the Democratic nominee after 82-year-old President Joe Biden made a historic and unprecedented decision to end his re-election campaign on July 21, 2024. She secured enough delegates to win the Democratic nomination on Vice President Kamala Harris and Former President Donald Trump ... President Joe Biden made the unprecedented decision to end his re-election campaign on July 21, 2024 and immediately endorsed Vice President Kamala Harris. She became the presumptive Democratic presidential nominee the same day and secured enough delegates to win the nomination on July 28.
 
 This study only considers polling data from after President Joe Biden ended his re-election campaign and Vice President Kamala Harris became the presumptive Democratic nominee for President. Polls conducted before July 21, 2024 were not considered because they include President Joe Biden, who is no longer running for President, as the Democratic nominee.
 
@@ -57,7 +57,9 @@ This study only considers polling data from after President Joe Biden ended his 
 
 <!-- Why it matters paragraph -->
 
-The remainder of this paper is structured as follows. @sec-data contains an overview of the dataset, summary statistics and visualizations. @sec-model contains the Bayesian regression used to ... @sec-results contains the results of applying the Bayesian regression model. @sec-discussion. [Appendix -@sec-idealized-meth]
+The remainder of this paper is structured as follows. @sec-data contains an overview of the polling dataset used, visualizations of different variables, and summary statistics. @sec-model contains the Bayesian regression models used to predict the percentages of voters that will support Vice President Harris and former President Trump. @sec-results contains tables and visualizations that present the results of applying the model. @sec-discussion. [Appendix -@sec-idealized-meth].
+
+The statistical programming language [@citeR] and the `tidyverse`, `janitor`, `ggplot`, `kableExtra`, `arrow`, `rstanarm`, and `spline` packages were used to perform this election forecast, clean the dataset, build the Bayesian regression models, create data visualizations and tables, and apply the model.
 
 # Data {#sec-data}
 
@@ -71,13 +73,15 @@ Some paragraphs about how we go from a phenomena in the world to an entry in the
 
 ## Outcome and predictor variables
 
-Add graphs, tables and text. Use sub-sub-headings for each outcome variable or update the subheading to be singular.
+We will use `end_date` (the date that a poll was completed), `state`, `pollster`, and `pollscore` to predict support for Vice President Harris and former President Trump at the national level, at the state level for each of the seven battleground states, and in Nebraska's second congressional district in @sec-model.
 
 ### National and swing state polling averages over time
 
+The percentage of the electorate voting for Vice President Harris and former President Trump varies by state; in some states support for Vice President Harris is higher than the national average and in others, it is lower than the national average. The 2024 presidential election is expected to be decided by seven swing states: Arizona, Georgia, Nevada, North Carolina, Wisconsin, Michigan, and Pennsylvania and Nebraska's second congressional district. Two states, Maine and Nebraska, award electoral votes by congressional district.
+
 ```{r}
 #| label: tbl-avgsummary
-#| tbl-cap: Polling averages for Harris and Trump at the national level and at the state level for the states included in the polling dataset as of October 29, 2024 show a narrow popular vote lead for Vice President Harris and extremely close races between Vice President Harris and former President Trump in the seven battleground states (Arizona, Georgia, Nevada, North Carolina, Michigan, Pennsylvania, Wisconsin).
+#| tbl-cap: Polling averages for Harris and Trump at the national level and at the state level for the states included in the polling dataset as of October 29, 2024 show a narrow popular vote lead for Vice President Harris and extremely close races in the 7 battleground states (Arizona, Georgia, Nevada, North Carolina, Michigan, Pennsylvania, Wisconsin).
 #| echo: false
 #| warning: false
 #| message: false
@@ -107,13 +111,13 @@ polling_averages <- analysis_data_harris %>%
 
 # Create the kable with the modified state names
 polling_table <- polling_averages %>%
-  select(State = state, `Harris (%)` = Harris, `Trump (%)` = Trump)
+  select(State = state, `Harris %` = Harris, `Trump %` = Trump)
 
 # Display the table
-kable(polling_table, format = "html", digits = 2)
+kable(polling_table, format = "html", digits = 2) 
 ```
 
-This takes into account date and state.
+In the presidential polling data we obtained from FiveThirtyEight, Vice President Harris leads former President Trump in the popular vote 50.5% to 48.0%. The margins in the seven battleground states are tight, with Vice President Harris leading in Nevada, Michigan, and Wisconsin, and F [@fivethirtyeight]. The dataset also includes polling data from Florida, Minnesota, Missouri, Montana, Nebraska, New Hampshire, Ohio, Texas, and Virginia, but those states are not expeced to determine the results of the election.
 
 Since President Biden ended his re-election campaign and Vice President Harris became the Democratic Presidential nominee, the polls have shown a dead heat between Vice President Harris and former President Trump. Polling averages for the six months leading up to election day, including from before President Biden withdrew on July 21, 2024 can be found in [Appendix -@sec-Biden].
 
@@ -207,62 +211,43 @@ ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
 
 And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
 
-### Methodology
-
-```{r}
-#| label: fig-methodology
-#| fig-cap: National polling averages for Kamala Harris and Donald Trump since July 21 have varied by methodology. Live phone polls had Trump leading by a narrow margin until mid-September, online panel polls have had Harris in the lead since early August, and probability panel polls have shown a shrinking lead for Harris since shortly after Predient Biden ended his campaign.
-#| echo: false
-#| warning: false
-#| message: false
-
-ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
-  stat_summary(geom = "line", fun = mean) +      # Plot the mean line for polling percentages
-  geom_point(size = 1, alpha = 0.25) +            # Add points for each individual poll
-  scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-  # geom_vline(xintercept = as.Date("2024-07-21"), linetype = "dashed", color = "darkgray") +
-  labs(title = "",
-       x = "",
-       y = "",
-       color = "") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_y_continuous(limits = c(0, 60), labels = scales::percent_format(scale = 1)) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%b %e") +
-  facet_wrap(~methodology)
-```
-
-After conducting further exploratory data analysis, we decided not to include methodology in our model because it is strongly related to pollster. Using pollster as a predictor sufficiently accounts for methodology. We discuss this decision in depth in @sec-model. Different pollsters tend to use different methodologies.
-
-```{r}
-#| label: fig-methodology-by-pollster
-#| fig-cap: In polls conducted after Vice President Harris became the Democratic nominee, every pollster used a distinct methdology.
-#| echo: false
-#| warning: false
-#| message: false
-methodology_counts <- national2 |>
-  group_by(pollster, methodology) |>
-  summarise(count = n(), .groups = 'drop')
-
-ggplot(methodology_counts, aes(x = methodology, y = count, fill = pollster)) +
-  geom_bar(stat = "identity", position = "dodge") +  # Use 'dodge' for side-by-side bars
-  labs(title = "",
-       x = "",
-       y = "",
-       fill = "") +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    legend.position = "none",  # Remove the legend
-    strip.text = element_text(size = 7.5)  # Adjust title size of each facet
-  ) +
-  facet_wrap(~pollster)  # Facet wrap by pollster
-```
-
 ### Pollscore
 
 ```{r}
+#| label: tbl-pollscore-table
+#| tbl-cap: Only high-quality datasets with a numeric grade of at least 3.0 were included, so the polls included all have good pollscores. Negative/lower pollscores are better.
+#| echo: false
+#| warning: false
+#| message: false
 
+# subset the analysis data to only include harris and trump after biden dropped out
+analysis_data2 <- analysis_data |>
+  filter((candidate_name == "Kamala Harris" | candidate_name == "Donald Trump"),end_date >= as.Date("2024-07-21")) 
+
+pollscore_counts <- analysis_data2 %>%
+  group_by(pollscore) %>%
+  summarize(num_polls = n())
+
+# Display the table
+kable(pollscore_counts, col.names = c("Pollscore", "Number of Polls"))
+```
+
+```{r}
+#| label: tbl-pollscore-pollsters
+#| tbl-cap: All the pollsters included in our analysis dataset have a numeric grade of 3, but Siena/NYT has the best pollscore at -1.5.
+#| echo: false
+#| warning: false
+#| message: false
+
+avg_pollscore_table <- analysis_data2 %>%
+  group_by(pollster) %>%
+  summarize(
+    avg_pollscore = mean(pollscore, na.rm = TRUE),
+    numeric_grade = mean(numeric_grade, na.rm=TRUE)) %>%
+  arrange(desc(avg_pollscore))
+
+# Display the table
+kable(avg_pollscore_table, col.names = c("Pollster", "Candidate", "Average Pollscore"))
 ```
 
 <!-- ## Predictor variables -->
@@ -273,36 +258,51 @@ Use sub-sub-headings for each outcome variable and feel free to combine a few in
 
 # Model {#sec-model}
 
-The goal of our modelling strategy is twofold.
-We use a Bayesian analysis model to investigate the relationship between the percentage of voters in a poll who support Vice President Harris or Former President Trump and the date the poll was conducted, the state (or if it was a national poll), the pollster who conducted the poll, and the pollscore it received.
+The goal of our modeling strategy is to use a Bayesian analysis model to investigate the relationship between the percentage of voters in a poll who support Vice President Harris or Former President Trump and the date the poll was conducted, the state (or if it was a national poll), the pollster who conducted the poll, and the pollscore it received. Model details and diagnostics are presented in [Appendix -@sec-model-details].
 
-Here we briefly describe the Bayesian analysis model used to investigate... Model details and diagnostics are included in [Appendix -@sec-model-details].
+We use two Bayesian regression models, one each to model the percentage of voters supporting Vice President Harris, $pct\_harris$ and the percentage of voters supporting former President Trump, $pct\_trump$.
+
+The models to predict $pct\_harris$ and $pct\_trump$ both use the following predictors: - `end_date_num`: the number of days since July 21, 2024, when President Biden ended his re-election campaign and endorsed Vice President Harris. This is the spline term; it uses an spline with 5 degrees of freedom to model changes in $pct\_harris$ (in the Harris model) and $pct\_trump$ (in the Trump model) over time.
+
+-   `state`: accounts for the change in $pct\_harris$ and $pct\_trump$ at the state-level for a particular state or at the national level.
+
+-   `pollster`: accounts for the differences in $pct\_harris$ and $pct\_trump$ among different pollsters.
+
+-   `pollscore:`adjusts for the pollscore rating, which is the Predictive Optimization of Latent skill Level in Surveys, Considering Overall Record, Empirically, calculated by averaging the predictive error and predictive bias of a poll [@Morris538].
 
 ## Model set-up
 
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.
+Define $pct\_harris_i$ as the percentage of voters supporting Vice President Harris and $pct\_trump_i$ as the percentage of voters supporting former President Trump.
 
 ```{=tex}
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
+\begin{align*} 
+pct\_harris_i &= \beta_0 + \beta_1 \cdot ns(end\_date\_num_i, df=5) + \beta_2 \cdot state_i + \beta_3 \cdot pollster_i + \beta_4 pollscore_i \\
+\beta_0 &\sim \mbox{Normal}(50, 10) \\
+\beta_1 &\sim \mbox{Normal}(0, 5) \\
+\beta_2 &\sim \mbox{Normal}(0, 5) \\
+\beta_3 &\sim \mbox{Normal}(0, 5) \\
+\beta_4 &\sim \mbox{Normal}(0, 5) 
+\end{align*}
 ```
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
+```{=tex}
+\begin{align*} 
+pct\_trump_i &= \beta_0 + \beta_1 \cdot ns(end\_date\_num_i, df=5) + \beta_2 \cdot state_i + \beta_3 \cdot pollster_i + \beta_4 pollscore_i \\
+\beta_0 &\sim \mbox{Normal}(50, 10) \\
+\beta_1 &\sim \mbox{Normal}(0, 5) \\
+\beta_2 &\sim \mbox{Normal}(0, 5) \\
+\beta_3 &\sim \mbox{Normal}(0, 5) \\
+\beta_4 &\sim \mbox{Normal}(0, 5) 
+\end{align*}
+```
+The model is run in R [@citeR] using the `rstanarm` package of @rstanarm. The default priors from `rstanarm` are used for both GLM Bayesian models. T intercept normal prior with $\mu=50$ and $\sigma=10$ reflects the central tendencies of Harris and Trump's polling percentages, influenced by prior knowledge and the predictors use a normal prior with $\mu=0$ and $\sigma=5$ [@rstanarm].
 
 ### Model justification
 
 We expect a positive relationship between the size of the wings and time spent aloft. In particular...
 
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
 # Results {#sec-results}
 
-Our results are summarized in Model results are in the appendix. @tbl-modelresults.
+The model results and model summary are presented in [Appendix -@sec-model-details].
 
 ```{r}
 #| echo: false
@@ -485,19 +485,6 @@ trump_spline_plot <- ggplot(trump_analysis_data, aes(x = end_date_num, y = pct_t
 ```
 
 ```{r}
-#| label: fig-harristrumpspline
-#| fig-cap: caption
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-#| layout-ncol: 2
-
-harris_spline_plot
-trump_spline_plot
-```
-
-```{r}
 #| echo: false
 #| eval: true
 #| warning: false
@@ -516,9 +503,9 @@ combined_pred_summary <- bind_rows(harris_pred_summary, trump_pred_summary)
 # Plot the combined data with both candidates' lines and ribbons
 ggplot() +
   # Plot the original data points for Harris
-  # geom_point(data = harris_analysis_data, aes(x = end_date_num, y = pct_harris, color = pollster), alpha = 0.6) +
+  geom_point(data = harris_analysis_data, aes(x = end_date_num, y = pct_harris, color = pollster), alpha = 0.6) +
   # Plot the original data points for Trump
-  # geom_point(data = trump_analysis_data, aes(x = end_date_num, y = pct_trump, color = pollster), alpha = 0.6) +
+  geom_point(data = trump_analysis_data, aes(x = end_date_num, y = pct_trump, color = pollster), alpha = 0.6) +
   # Plot the prediction line for Kamala Harris
   geom_line(
     data = combined_pred_summary %>% filter(candidate == "Kamala Harris"),
@@ -564,504 +551,6 @@ ggplot() +
 ```
 
 ## State-Level Results for the Seven Battleground States and Nebraska's Second Congressional District
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
-library(splines)
-
-# ARIZONA 
-# harris arizona
-harris_arizona <- 
-  harris_analysis_data |> 
-  filter(state == "Arizona" | state == "National")
-
-pollster_levels <- levels(harris_arizona$pollster)
-
-# Initialize a list to store predictions for each pollster
-all_pollster_preds <- list()
-
-# Loop over each pollster to generate predictions
-for (p in pollster_levels) {
-  # Create new data for each pollster
-  random_pollscore <- sample(c(-1.1, -1.5, -1.2), 1)
-  harris_new_data <- data.frame(
-    end_date_num = seq(
-      min(harris_arizona$end_date_num),
-      max(harris_arizona$end_date_num),
-      length.out = 100
-    ),
-    pollster = factor(p, levels = pollster_levels),
-    state = factor("Arizona", levels = levels(harris_arizona$state)),
-    pollscore = random_pollscore
-  )
-  
-  # Generate posterior predictions for this pollster
-  preds <- posterior_predict(harris_model, newdata = harris_new_data)
-  all_pollster_preds[[p]] <- preds  # Store in list
-}
-
-# Combine predictions across all pollsters
-# Convert list of matrices into a 3D array: [iterations, predictions, pollster]
-all_pollster_preds_array <- simplify2array(all_pollster_preds)
-
-# Calculate summary statistics across pollsters
-# Averaging predictions across pollsters at each iteration
-pred_mean <- apply(all_pollster_preds_array, c(1, 2), mean)
-pred_lower <- apply(all_pollster_preds_array, 2, quantile, probs = 0.025)
-pred_upper <- apply(all_pollster_preds_array, 2, quantile, probs = 0.975)
-
-# Combine these into a summary data frame
-harris_pred_summary_az <- harris_new_data %>%
-  mutate(
-    pred_mean = colMeans(pred_mean),
-    pred_lower = pred_lower,
-    pred_upper = pred_upper
-  )
-
-# trump arizona
-trump_arizona <- 
-  trump_analysis_data |>
-  filter(state == "Arizona" | state == "National")
-
-pollster_levels <- levels(trump_arizona$pollster)
-
-# Initialize a list to store predictions for each pollster
-all_pollster_preds <- list()
-
-# Loop over each pollster to generate predictions
-for (p in pollster_levels) {
-  # Create new data for each pollster
-  random_pollscore <- sample(c(-1.1, -1.5, -1.2), 1)
-  trump_new_data <- data.frame(
-    end_date_num = seq(
-      min(trump_arizona$end_date_num),
-      max(trump_arizona$end_date_num),
-      length.out = 100
-    ),
-    pollster = factor(p, levels = pollster_levels),
-    state = factor("Arizona", levels = levels(trump_arizona$state)),
-    pollscore = random_pollscore
-  )
-  
-  # Generate posterior predictions for this pollster
-  preds <- posterior_predict(trump_model, newdata = trump_new_data)
-  all_pollster_preds[[p]] <- preds  # Store in list
-}
-
-# Combine predictions across all pollsters
-# Convert list of matrices into a 3D array: [iterations, predictions, pollster]
-all_pollster_preds_array <- simplify2array(all_pollster_preds)
-
-# Calculate summary statistics across pollsters
-# Averaging predictions across pollsters at each iteration
-pred_mean <- apply(all_pollster_preds_array, c(1, 2), mean)
-pred_lower <- apply(all_pollster_preds_array, 2, quantile, probs = 0.025)
-pred_upper <- apply(all_pollster_preds_array, 2, quantile, probs = 0.975)
-
-# Combine these into a summary data frame
-trump_pred_summary_az <- trump_new_data %>%
-  mutate(
-    pred_mean = colMeans(pred_mean),
-    pred_lower = pred_lower,
-    pred_upper = pred_upper
-  )
-
-# plot it
-harris_pred_summary_az <- harris_pred_summary_az %>%
-  mutate(candidate = "Kamala Harris")
-
-trump_pred_summary_az <- trump_pred_summary_az %>%
-  mutate(candidate = "Donald Trump")
-
-# Combine the data frames
-combined_pred_summary_az <- bind_rows(harris_pred_summary_az, trump_pred_summary_az)
-
-# Plot the combined data with both candidates' lines and ribbons
-plot_az <- 
-    ggplot() +
-    # Plot the original data points for Harris
-    geom_point(data = harris_arizona, aes(x = end_date_num, y = pct_harris, color = pollster), alpha = 0.6) +
-    # Plot the original data points for Trump
-    geom_point(data = trump_arizona, aes(x = end_date_num, y = pct_trump, color = pollster), alpha = 0.6) +
-    # Plot the prediction line for Kamala Harris
-    geom_line(
-      data = combined_pred_summary_az %>% filter(candidate == "Kamala Harris"),
-      aes(x = end_date_num, y = pred_mean, color = candidate),
-      inherit.aes = FALSE
-    ) +
-    # Plot the prediction line for Donald Trump
-    geom_line(
-      data = combined_pred_summary_az %>% filter(candidate == "Donald Trump"),
-      aes(x = end_date_num, y = pred_mean, color = candidate),
-      inherit.aes = FALSE
-    ) +
-    # Plot the prediction ribbon for Kamala Harris
-    geom_ribbon(
-      data = combined_pred_summary_az %>% filter(candidate == "Kamala Harris"),
-      aes(x = end_date_num, ymin = pred_lower, ymax = pred_upper, fill = candidate),
-      alpha = 0.1,
-      inherit.aes = FALSE
-    ) +
-    # Plot the prediction ribbon for Donald Trump
-    geom_ribbon(
-      data = combined_pred_summary_az %>% filter(candidate == "Donald Trump"),
-      aes(x = end_date_num, ymin = pred_lower, ymax = pred_upper, fill = candidate),
-      alpha = 0.1,
-      inherit.aes = FALSE
-    ) +
-    labs(
-      x = "Days since Biden withdrew",
-      y = "",
-      title = "Arizona"
-    ) +
-    theme_minimal() +
-    scale_y_continuous(labels = scales::percent_format(scale = 1)) +
-    scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-    scale_fill_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-    # guides(color = guide_legend(title = ""), fill = guide_legend(title = "Candidate"))
-    guides(
-      color = guide_legend(
-        title = "Candidate", 
-        override.aes = list(fill = NA, linetype = 1)
-      ),
-      fill = "none"
-    )
-```
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
-library(splines)
-# Georgia
-# harris georgia
-harris_georgia <- 
-  harris_analysis_data |> 
-  filter(state == "Georgia" | state == "National")
-
-pollster_levels <- levels(harris_georgia$pollster)
-
-# Initialize a list to store predictions for each pollster
-all_pollster_preds <- list()
-
-# Loop over each pollster to generate predictions
-for (p in pollster_levels) {
-  # Create new data for each pollster
-  random_pollscore <- sample(c(-1.1, -1.5, -1.2), 1)
-  harris_new_data <- data.frame(
-    end_date_num = seq(
-      min(harris_georgia$end_date_num),
-      max(harris_georgia$end_date_num),
-      length.out = 100
-    ),
-    pollster = factor(p, levels = pollster_levels),
-    state = factor("Georgia", levels = levels(harris_georgia$state)),
-    pollscore = random_pollscore
-  )
-  
-  # Generate posterior predictions for this pollster
-  preds <- posterior_predict(harris_model, newdata = harris_new_data)
-  all_pollster_preds[[p]] <- preds  # Store in list
-}
-
-# Combine predictions across all pollsters
-# Convert list of matrices into a 3D array: [iterations, predictions, pollster]
-all_pollster_preds_array <- simplify2array(all_pollster_preds)
-
-# Calculate summary statistics across pollsters
-# Averaging predictions across pollsters at each iteration
-pred_mean <- apply(all_pollster_preds_array, c(1, 2), mean)
-pred_lower <- apply(all_pollster_preds_array, 2, quantile, probs = 0.025)
-pred_upper <- apply(all_pollster_preds_array, 2, quantile, probs = 0.975)
-
-# Combine these into a summary data frame
-harris_pred_summary_az <- harris_new_data %>%
-  mutate(
-    pred_mean = colMeans(pred_mean),
-    pred_lower = pred_lower,
-    pred_upper = pred_upper
-  )
-
-# trump georgia
-trump_georgia <- 
-  trump_analysis_data |>
-  filter(state == "Georgia" | state == "National")
-
-pollster_levels <- levels(trump_georgia$pollster)
-
-# Initialize a list to store predictions for each pollster
-all_pollster_preds <- list()
-
-# Loop over each pollster to generate predictions
-for (p in pollster_levels) {
-  # Create new data for each pollster
-  random_pollscore <- sample(c(-1.1, -1.5, -1.2), 1)
-  trump_new_data <- data.frame(
-    end_date_num = seq(
-      min(trump_georgia$end_date_num),
-      max(trump_georgia$end_date_num),
-      length.out = 100
-    ),
-    pollster = factor(p, levels = pollster_levels),
-    state = factor("Georgia", levels = levels(trump_georgia$state)),
-    pollscore = random_pollscore
-  )
-  
-  # Generate posterior predictions for this pollster
-  preds <- posterior_predict(trump_model, newdata = trump_new_data)
-  all_pollster_preds[[p]] <- preds  # Store in list
-}
-
-# Combine predictions across all pollsters
-# Convert list of matrices into a 3D array: [iterations, predictions, pollster]
-all_pollster_preds_array <- simplify2array(all_pollster_preds)
-
-# Calculate summary statistics across pollsters
-# Averaging predictions across pollsters at each iteration
-pred_mean <- apply(all_pollster_preds_array, c(1, 2), mean)
-pred_lower <- apply(all_pollster_preds_array, 2, quantile, probs = 0.025)
-pred_upper <- apply(all_pollster_preds_array, 2, quantile, probs = 0.975)
-
-# Combine these into a summary data frame
-trump_pred_summary_az <- trump_new_data %>%
-  mutate(
-    pred_mean = colMeans(pred_mean),
-    pred_lower = pred_lower,
-    pred_upper = pred_upper
-  )
-
-# plot it
-harris_pred_summary_az <- harris_pred_summary_az %>%
-  mutate(candidate = "Kamala Harris")
-
-trump_pred_summary_az <- trump_pred_summary_az %>%
-  mutate(candidate = "Donald Trump")
-
-# Combine the data frames
-combined_pred_summary_az <- bind_rows(harris_pred_summary_az, trump_pred_summary_az)
-
-# Plot the combined data with both candidates' lines and ribbons
-plot_ga <- 
-    ggplot() +
-    # Plot the original data points for Harris
-    geom_point(data = harris_georgia, aes(x = end_date_num, y = pct_harris, color = pollster), alpha = 0.6) +
-    # Plot the original data points for Trump
-    geom_point(data = trump_georgia, aes(x = end_date_num, y = pct_trump, color = pollster), alpha = 0.6) +
-    # Plot the prediction line for Kamala Harris
-    geom_line(
-      data = combined_pred_summary_az %>% filter(candidate == "Kamala Harris"),
-      aes(x = end_date_num, y = pred_mean, color = candidate),
-      inherit.aes = FALSE
-    ) +
-    # Plot the prediction line for Donald Trump
-    geom_line(
-      data = combined_pred_summary_az %>% filter(candidate == "Donald Trump"),
-      aes(x = end_date_num, y = pred_mean, color = candidate),
-      inherit.aes = FALSE
-    ) +
-    # Plot the prediction ribbon for Kamala Harris
-    geom_ribbon(
-      data = combined_pred_summary_az %>% filter(candidate == "Kamala Harris"),
-      aes(x = end_date_num, ymin = pred_lower, ymax = pred_upper, fill = candidate),
-      alpha = 0.1,
-      inherit.aes = FALSE
-    ) +
-    # Plot the prediction ribbon for Donald Trump
-    geom_ribbon(
-      data = combined_pred_summary_az %>% filter(candidate == "Donald Trump"),
-      aes(x = end_date_num, ymin = pred_lower, ymax = pred_upper, fill = candidate),
-      alpha = 0.1,
-      inherit.aes = FALSE
-    ) +
-    labs(
-      x = "Days since Biden withdrew",
-      y = "",
-      title = "Georgia"
-    ) +
-    theme_minimal() +
-    scale_y_continuous(labels = scales::percent_format(scale = 1)) +
-    scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-    scale_fill_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-    # guides(color = guide_legend(title = ""), fill = guide_legend(title = "Candidate"))
-    guides(
-      color = guide_legend(
-        title = "Candidate", 
-        override.aes = list(fill = NA, linetype = 1)
-      ),
-      fill = "none"
-    )
-```
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
-library(splines)
-# Nevada
-harris_nevada <- 
-  harris_analysis_data |> 
-  filter(state == "Nevada" | state == "National")
-
-pollster_levels <- levels(harris_nevada$pollster)
-
-# Initialize a list to store predictions for each pollster
-all_pollster_preds <- list()
-
-# Loop over each pollster to generate predictions
-for (p in pollster_levels) {
-  # Create new data for each pollster
-  pollscore = random_pollscore
-  harris_new_data <- data.frame(
-    end_date_num = seq(
-      min(harris_nevada$end_date_num),
-      max(harris_nevada$end_date_num),
-      length.out = 100
-    ),
-    pollster = factor(p, levels = pollster_levels),
-    state = factor("Nevada", levels = levels(harris_nevada$state)),
-    pollscore = random_pollscore
-  )
-  
-  # Generate posterior predictions for this pollster
-  preds <- posterior_predict(harris_model, newdata = harris_new_data)
-  all_pollster_preds[[p]] <- preds  # Store in list
-}
-
-# Combine predictions across all pollsters
-# Convert list of matrices into a 3D array: [iterations, predictions, pollster]
-all_pollster_preds_array <- simplify2array(all_pollster_preds)
-
-# Calculate summary statistics across pollsters
-# Averaging predictions across pollsters at each iteration
-pred_mean <- apply(all_pollster_preds_array, c(1, 2), mean)
-pred_lower <- apply(all_pollster_preds_array, 2, quantile, probs = 0.025)
-pred_upper <- apply(all_pollster_preds_array, 2, quantile, probs = 0.975)
-
-# Combine these into a summary data frame
-harris_pred_summary_az <- harris_new_data %>%
-  mutate(
-    pred_mean = colMeans(pred_mean),
-    pred_lower = pred_lower,
-    pred_upper = pred_upper
-  )
-
-# trump nevada
-trump_nevada <- 
-  trump_analysis_data |>
-  filter(state == "Nevada" | state == "National")
-
-pollster_levels <- levels(trump_nevada$pollster)
-
-# Initialize a list to store predictions for each pollster
-all_pollster_preds <- list()
-
-# Loop over each pollster to generate predictions
-for (p in pollster_levels) {
-  # Create new data for each pollster
-  random_pollscore <- sample(c(-1.1, -1.5, -1.2), 1)
-  trump_new_data <- data.frame(
-    end_date_num = seq(
-      min(trump_nevada$end_date_num),
-      max(trump_nevada$end_date_num),
-      length.out = 100
-    ),
-    pollster = factor(p, levels = pollster_levels),
-    state = factor("Nevada", levels = levels(trump_nevada$state)),
-    pollscore = random_pollscore
-  )
-  
-  # Generate posterior predictions for this pollster
-  preds <- posterior_predict(trump_model, newdata = trump_new_data)
-  all_pollster_preds[[p]] <- preds  # Store in list
-}
-
-# Combine predictions across all pollsters
-# Convert list of matrices into a 3D array: [iterations, predictions, pollster]
-all_pollster_preds_array <- simplify2array(all_pollster_preds)
-
-# Calculate summary statistics across pollsters
-# Averaging predictions across pollsters at each iteration
-pred_mean <- apply(all_pollster_preds_array, c(1, 2), mean)
-pred_lower <- apply(all_pollster_preds_array, 2, quantile, probs = 0.025)
-pred_upper <- apply(all_pollster_preds_array, 2, quantile, probs = 0.975)
-
-# Combine these into a summary data frame
-trump_pred_summary_az <- trump_new_data %>%
-  mutate(
-    pred_mean = colMeans(pred_mean),
-    pred_lower = pred_lower,
-    pred_upper = pred_upper
-  )
-
-# plot it
-harris_pred_summary_az <- harris_pred_summary_az %>%
-  mutate(candidate = "Kamala Harris")
-
-trump_pred_summary_az <- trump_pred_summary_az %>%
-  mutate(candidate = "Donald Trump")
-
-# Combine the data frames
-combined_pred_summary_az <- bind_rows(harris_pred_summary_az, trump_pred_summary_az)
-
-# Plot the combined data with both candidates' lines and ribbons
-plot_nv <- 
-    ggplot() +
-    # Plot the original data points for Harris
-    geom_point(data = harris_nevada, aes(x = end_date_num, y = pct_harris, color = pollster), alpha = 0.6) +
-    # Plot the original data points for Trump
-    geom_point(data = trump_nevada, aes(x = end_date_num, y = pct_trump, color = pollster), alpha = 0.6) +
-    # Plot the prediction line for Kamala Harris
-    geom_line(
-      data = combined_pred_summary_az %>% filter(candidate == "Kamala Harris"),
-      aes(x = end_date_num, y = pred_mean, color = candidate),
-      inherit.aes = FALSE
-    ) +
-    # Plot the prediction line for Donald Trump
-    geom_line(
-      data = combined_pred_summary_az %>% filter(candidate == "Donald Trump"),
-      aes(x = end_date_num, y = pred_mean, color = candidate),
-      inherit.aes = FALSE
-    ) +
-    # Plot the prediction ribbon for Kamala Harris
-    geom_ribbon(
-      data = combined_pred_summary_az %>% filter(candidate == "Kamala Harris"),
-      aes(x = end_date_num, ymin = pred_lower, ymax = pred_upper, fill = candidate),
-      alpha = 0.1,
-      inherit.aes = FALSE
-    ) +
-    # Plot the prediction ribbon for Donald Trump
-    geom_ribbon(
-      data = combined_pred_summary_az %>% filter(candidate == "Donald Trump"),
-      aes(x = end_date_num, ymin = pred_lower, ymax = pred_upper, fill = candidate),
-      alpha = 0.1,
-      inherit.aes = FALSE
-    ) +
-    labs(
-      x = "Days since Biden withdrew",
-      y = "",
-      title = "Nevada"
-    ) +
-    theme_minimal() +
-    scale_y_continuous(labels = scales::percent_format(scale = 1)) +
-    scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-    scale_fill_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-    # guides(color = guide_legend(title = ""), fill = guide_legend(title = "Candidate"))
-    guides(
-      color = guide_legend(
-        title = "Candidate", 
-        override.aes = list(fill = NA, linetype = 1)
-      ),
-      fill = "none"
-    )
-```
 
 ```{r}
 #| echo: false
@@ -1186,7 +675,7 @@ for (state in swing_states) {
 #| warning: false
 #| label: fig-swingresults
 #| fig-cap: "On average, Trump has had narrow leads in Arizona, Georgia, Nevada, and North Carolina, while Harris has narrow leads in Michigan, Pennsylvania, and Wisconsin."
-#| fig-subcap: ["Arizona: Trump +1.61", "Georgia: Trump +3.01", "Nevada: Trump +0.37","North Carolina: Trump +0.44", "Michigan: Harris +2.22", "Pennsylvania: Harris +2.57", "Wisconsin: Harris +3.31", "Nebraska CD-2: Harris + 11.87"] 
+#| fig-subcap: ["Avg Trump lead +1.61", "Avg Trump lead +3.01", "Avg Trump lead +0.37","Avg Trump lead +0.44", "Avg Harris lead +2.22", "Avg Harris lead +2.57", "Avg Harris lead +3.31", "Avg Harris lead +11.87"] 
 #| layout-ncol: 2
 #| layout-nrow: 4
 
@@ -1211,19 +700,19 @@ print(ne2)
 
 # Discussion {#sec-discussion}
 
-## First discussion point {#sec-first-point}
+## Margin of error, close race, why either could win {#sec-first-point}
 
 If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this.
 
-## Second discussion point
+## Polling flaws in 2016, 2020, and 2022
 
-Please don't use these as sub-heading labels - change them to be what your point actually is.
+Discuss polling flaws in 2016 and 2020, how support for Trump was underestimated. Discuss how this was overcorrected in 2022, and how support for GOP house and senate candidates was overestimated. Discuss Trump's unique appeal to a certain segment of the electorate. Refer to Nate Silver articles.
 
-## Third discussion point
+## Something else about polling, nonresponse, and how a repeat of any of these flaws could swing the race either way
 
-## Weaknesses and next steps
+## Weaknesses, limitations, and next steps
 
-Weaknesses and next steps should also be included.
+Biden's withdrawal, use of two models, no third-party candidates, only national popular vote and swing states were analyzed, we did not consider how the pollsters in our dataset handled nonresponse when modeling. Weaknesses and next steps should also be included.
 
 \newpage
 
@@ -1233,9 +722,76 @@ Weaknesses and next steps should also be included.
 
 # Idealized methodology {#sec-idealized-meth}
 
+## Survey objectives
+
+## Sampling approach
+
+The target population for our idealized survey is likely voters in the United States. We will use the L2 voter database from @L2 to build a representative sampling frame. The L2 voter database is one of the most trusted sources for enhanced voter data and it includes detailed demographics and voting history data [@L2]. Using this data set is the first step towards ensuring that our sample aligns with the general electorate and is representative of likely voters so that we can sample precisely.
+
+We will use a stratified sampling approach to closely examine voter demographics. Stratified sampling allows us to look at every stratum and carry out simple random sampling with those strata [@tswd] and its primary goal is to ensure that all strata of the population are represented [@Neyman1934]. We selected stratified sampling because it will allow us to have representation within the subgroups that we are interested in and it has a reduced sampling error and improved accuracy rate [@tswd]. We considered simple random sampling, but ultimately chose stratified sampling instead because it tends to produce more precise accurates when used to forecast U.S. elections [@pewhacking]. The U.S. election is decided by the electoral college, not the popular vote so we will oversample from the seven key battleground states that are expected to decide the 2024 election: Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania [@fivethirtyeight]. Oversampling from the swing states will allow us to put an emphasis on forecasting their results and increase the accuracy of our electoral college estimate. Our target sample size of 100,000 respondents will provide a margin of error of 2% at a 95% confidence level; this will allow us to be precise while still accounting for budgetary constraints [@pewhacking].
+
+## Respondent recruitment
+
 ## Idealized survey
 
+2024 U.S. Presidential Election Poll This survey collects information about voters' political views and who they support in the 2024 U.S. Presidential Election. The data collected will not be shared with any external parties and will strictly be used for analytical purposes. This survey is completely anonymous and your data will be protected. Any published material regarding the results drawn from this survey cannot be traced back to you. The goal of this survey is to draw conclusions about the 2024 presidential elections held in the United States. Please answer as accurately as possible. If you have any questions or concerns, please reach out to aliza.mithwani\@mail.utoronto.ca (correspondence will not be shared with any external parties).
+
+1.  Are you a registered voter in the United States ? Yes No
+2.  Do you plan to vote in the upcoming presidential election? Yes No Undecided
+
+**Demographics Questions**
+
+3.  Would you consider yourself: White Black or African American Hispanic or Latino Asian American Indian or Alaskan Native Middle Eastern or North African Native Hawaiian or Pacific Islander Prefer not to say Other (specify)
+4.  What is your age? 18-29 20-44 45-64 65+ Prefer not to say
+
+```{=html}
+<!-- -->
+```
+5.  What sex were you assigned at birth, on your original birth certificate? "Female" “Male” Prefer not to say
+
+6.  How do you currently describe yourself (select all that apply)? "Female" “Male” “Transgender” Prefer not to say Other (Specify)
+
+7.  What is your household income? Less than \$20,000 \$20,000-59,999 \$60,000-79,999 \$80,000-99,999 \$100,000 or more Prefer not to say
+
+8.  In which state do you currently reside? Dropdown list of states
+
+**Candidate Evaluation**
+
+9.  If the 2024 presidential election were held today, who would you vote for?
+
+Donald Trump, Republican Kamala Harris, Democrat Jill Stein, Green Party Write-in Don't know Prefer not to say Other (please specify)
+
+(Optional) If you selected "Write-in" for the last question, please specify below:
+
+10. Do you consider yourself a Democrat, a Republican, an Independent, or a member of another party? Democrat Republican Independent Another Party Don't know Prefer not to say
+
+**Key Issues and Concerns**
+
+11. Rate these issues in order of importance to you (1 being most important and 7 being the least important): (use multiple choice grid with 7 rows and 7 columns) Abortion Immigration The state of democracy/corruption Foreign policy The economy Character Climate change?
+12. If you had to assign a value from 1 to 5 to your level of optimism about the future of the United States, where 1 means highly pessimistic and 5 means highly optimistic, where would you place yourself? 1 (Highly pessimistic) 2 3 4 5 (Highly optimistic)
+13. What would you say to someone who is undecided about voting in this election?
+
+**Confirmation Message**
+
+Thank you for your response! Your answers have successfully been recorded.
+
+**Link to survey:** <https://forms.gle/h7MTA8k21ZbYxahT6>
+
 # Pollster methodology overview and evaluation {#sec-pollster-meth}
+
+## Overview
+
+## Population and Sampling Frame
+
+## Respondent Recruitment Strategy
+
+## Sampling Approch and Trade-offs
+
+## Strengths and Limitations of Methodology
+
+### Strengths
+
+### Limitations
 
 # Additional data details
 
@@ -1319,7 +875,7 @@ Model summary is shown in @tbl-model-summary
 #| echo: false
 #| eval: true
 #| label: tbl-model-summary
-#| tbl-cap: "Explanatory models of support for Harris and Trump based on ..."
+#| tbl-cap: "Explanatory models of support for Harris and Trump based on end date, state, pollster, and pollscore"
 #| warning: false
 
 modelsummary::modelsummary(
