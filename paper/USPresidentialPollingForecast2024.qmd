@@ -55,11 +55,11 @@ The estimands are the percentages of voters supporting Vice President Harris and
 
 <!-- Results paragraph -->
 
-Based on the results of applying our Bayesian model, we estimate that Vice President Harris will receive 48.3% of the popular vote and win the swing states of Michigan, Wisconsin, Pennsylvania, and Nebraska CD-2, and former President Trump will receive 47.1% of the popular vote and win the swing states of Arizona, Nevada, North Carolina, and Georgia. We use a baseline of 222 electoral votes for Vice President Harris from safe and likely Democratic states that were won by both Hillary Clinton and President Biden in 2016 and 2020, and 219 electoral votes for former President Trump from safe and likely Republican states that he won in 2016 and 2020 [@270towin]. As a result, we estimate that Vice President Harris will defeat former President Trump in the electoral college 270 to 268.
+Based on the results of applying our Bayesian model, we estimate that Vice President Harris will receive 48.3% of the popular vote and win the swing states of Michigan, Wisconsin, Pennsylvania, and Nebraska CD-2, and former President Trump will receive 47.1% of the popular vote and win the swing states of Arizona, Nevada, North Carolina, and Georgia. We use a baseline of 222 electoral votes for Vice President Harris from safe and likely Democratic states that were won by both Hillary Clinton and President Biden in 2016 and 2020, and 219 electoral votes for former President Trump from safe and likely Republican states that he won in 2016 and 2020 [@270towin]. U.S. elections are decided by the electoral college, not the popular vote; the candidate who wins the popular vote is not guaranteed to win the election [@270towin]. We estimate that Vice President Harris will defeat former President Trump in the electoral college 270 to 268.
 
 <!-- Why it matters paragraph -->
 
-Vice President Harris and former President Trump have presented staunchly different policies and visions for the future of the United States. Vice President Harris has campaigned on reproductive rights, supporting small businesses, building more affordable housing, expanding medicare coverage, and cutting taxes for the middle class. Former President Trump has campaigned on a 200% tariff, ending foreign aid to Ukraine, and securing the Southern border despite instructing his allies in the U.S. Senate to oppose a bipartisan border bill. Women make up 50% of the U.S. population, but all 46 presidents so far have been men. Only one person of color, Barack Obama, has ever been elected president.
+Political polarization in the United States is at an all-time high. Vice President Harris and former President Trump have presented staunchly different policies and visions for the future of the United States. Vice President Harris has campaigned on reproductive rights, supporting small businesses, building more affordable housing, expanding medicare coverage, and cutting taxes for the middle class. Former President Trump has campaigned on tariffs, sales taxes ending foreign aid to Ukraine, and securing the Southern border despite instructing his allies in the U.S. Senate to oppose a bipartisan border bill. He is has not yet acknowledged that he lost the 2020 election to President Joe Biden. Women make up 50% of the U.S. population, but all 46 presidents so far have been men. Only one person of color, Barack Obama, has ever been elected president.
 
 The remainder of this paper is structured as follows. @sec-data contains an overview of the polling dataset from @fivethirtyeight that was used, visualizations of different variables, and summary statistics. @sec-model contains the Bayesian regression models used to predict the percentages of voters that will support Vice President Harris and former President Trump. @sec-results contains tables and visualizations that present the national popular vote and state-level results after applying the Bayesian regression model model. @sec-discussion contains detailed discussions about the .... [Appendix -@sec-idealized-meth] contains a thorough discussion about an idealized methodology that we would use if given a \$100,000 budget to build a survey to forecast the 2024 U.S. election and our idealized survey questions. [Appendix -@sec-pollster-meth] contains a deep-dive into and evaluation of the methodologies used in the Siena College/New York Times poll. The statistical programming language [@citeR] and the `tidyverse`, `janitor`, `ggplot`, `kableExtra`, `arrow`, `rstanarm`, and `spline` packages were used to perform this election forecast, clean the dataset, build the Bayesian regression models, create data visualizations and tables, and apply the model.
 
@@ -75,7 +75,7 @@ We cleaned this dataset to only include high-quality polls at the national and s
 
 <!-- Some paragraphs about how we go from a phenomena in the world to an entry in the dataset. -->
 
-During U.S. presidential and midterm election cycles, different pollsters conduct polls (surveys) to estimate support for Democratic, Republican, and third-party candidates and forecast the election results. Sampling and survey methodologies vary by pollster and we discuss the methodologies used by the Siena College/New York Times poll in [Appendix -@sec-pollster-meth]. Each poll aims to survey a population representative of the U.S. electorate or likely voters to predict support percentages for each candidate and which candidate will win.
+During U.S. presidential and midterm election cycles, different pollsters conduct polls (surveys) to estimate support for Democratic, Republican, and third-party candidates and forecast the election results. Sampling and survey methodologies vary by pollster and we discuss the methodologies used by the Siena College/New York Times poll in [Appendix -@sec-pollster-meth]. Each poll aims to survey a population that is representative of the U.S. electorate or likely voters to predict the percentage of voters who will support each candidate and which candidate will win.
 
 Our dataset from @fivethirtyeight is a a collection of presidential polls from different pollsters that were conducted during the 2024 presidential election cycle. Each entry represents the percentage of respondents to a unique poll supporting Vice President Harris (after July 21, 2024) or President Joe Biden (before July 21, 2024), former President Trump, and third-party candidates. Unique polls are identified by a poll id and each entry contains information about the poll, such as the pollster that conducted it, its population, sample size, and the methodology that was used and information about its quality and accuracy, including its numeric grade, pollscore, and transparency score.
 
@@ -915,9 +915,15 @@ The survey includes the following sections:
 
 ## Data Validation
 
+Common issues with surveys include incomplete or inconsistent responses, duplicate responses, and fake responses by bots. We will use automate validation checks to detect and filter out incomplete or inconsistent responses, IP tracking to prevent duplicate responses, and CAPTCHA technology to minimize bot interference [@zhang2019].
+
 ## Poll Aggregation
 
+We will use the seven-day average method to aggregate polls because it decreases fluctuations in daily responses by smoothing out temporary spikes. This will make trends clearer.
+
 ## Weighting and Data Adjustments
+
+We will use post-stratification weighting to correct demographic imbalances in our final sample [@nytsienacrosstabs].
 
 ## Budget
 
