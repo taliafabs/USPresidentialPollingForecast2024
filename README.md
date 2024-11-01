@@ -23,5 +23,4 @@ Aspects of this code were written and debugged with the help of a large language
 ## Some checks
 
 - [ ] Remove files that you're not using
-- [ ] Update comments in R scripts
 - [ ] Remove this checklist
