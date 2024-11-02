@@ -69,7 +69,7 @@ The remainder of this paper is structured as follows. @sec-data contains an over
 
 The data was downloaded on October 29, 2024; polling data released after this date was not considered anywhere in this paper. The presidential polls dataset from FiveThirtyEight contains national polls and state-level polls for each of the 50 states and congressional districts in Maine and Nebraska [@fivethirtyeight]. The polls are conducted by various pollsters, including YouGov, Siena/NYT, CES/YouGov, Marquette Law School, The Washington Post, and McCourtney Institute/YouGov. We analyze national data and state-level data for the seven swing states that are expected to determine the results of this election: Michigan, Wisconsin, Pennsylvania, North Carolina, Georgia, Nevada, and Arizona.
 
-We cleaned this dataset to only include high-quality polls at the national and state-level conducted on or after July 21, 2024, where the `population` is likely voters. We determined which polls were high-quality based on the numeric grade, and cleaned the dataset to include only polls with a numeric grade of at least 3.0. Polls with a rating (`numeric_grade`) of 3.0 are conducted by the best pollsters in the United States and score in the 99th percentile or better for accuracy and transparency [@MorrisBestPollsters]. If a poll in the dataset from @fivethirtyeight includes multiple populations, the narrowest one is used (likely voters over registered voters and registered voters over all American adults) [@Morris538].
+We cleaned this dataset to only include high-quality polls at the national and state-level conducted on or after July 21, 2024, where the `population` is likely voters. We determined which polls were high-quality based on the numeric grade, and cleaned the dataset to include only polls with a numeric grade of at least 3.0. Polls with a rating (`numeric_grade`) of 3.0 are conducted by the best pollsters in the United States and score in the 99th percentile or better for accuracy and transparency [@MorrisBestPollsters]. If a poll in the dataset from @fivethirtyeight includes multiple populations, the narrowest one is used (likely voters over registered voters and registered voters over all American adults) [@Morris538]. Additional data cleaning details are available in [Appendix -@sec-data-cleaning].
 
 ## Measurement
 
@@ -193,9 +193,6 @@ ggplot(sevenbattlegrounds2, aes(x = end_date, y = pct, color = candidate_name)) 
 Talk more about it.
 
 ```{r}
-```
-
-```{r}
 #| label: fig-pollsters2
 #| fig-cap:  Harris and Trump polling averages vary by pollster. The lines are moving poll averages for each candidate in the seven battleground states. The points are individual polls. The color of each point indicates which candidate lead in the poll.
 #| echo: false
@@ -221,8 +218,8 @@ ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
   facet_wrap(~pollster)
 ```
 
-
 @tbl-pollscore-table shows the different pollscores that appear in our dataset and how often they appear.
+
 ```{r}
 #| label: tbl-pollscore-table
 #| tbl-cap: Only high-quality datasets with a numeric grade of at least 3.0 were included, so the polls included all have good pollscores. Negative/lower pollscores are better.
@@ -266,7 +263,7 @@ The goal of our modeling strategy is to use a Bayesian model to investigate the 
 
 The models to predict $pct\_harris$ and $pct\_trump$ both use the following predictors:
 
--    `end_date_num`: the number of days since July 21, 2024, when President Biden ended his re-election campaign and endorsed Vice President Harris. This is the spline term; it uses an spline with 5 degrees of freedom to model changes in $pct\_harris$ (in the Harris model) and $pct\_trump$ (in the Trump model) over time.
+-   `end_date_num`: the number of days since July 21, 2024, when President Biden ended his re-election campaign and endorsed Vice President Harris. This is the spline term; it uses an spline with 5 degrees of freedom to model changes in $pct\_harris$ (in the Harris model) and $pct\_trump$ (in the Trump model) over time.
 
 -   `state`: accounts for the change in $pct\_harris$ and $pct\_trump$ at the state-level for a particular state or at the national level.
 
@@ -279,6 +276,7 @@ The models to predict $pct\_harris$ and $pct\_trump$ both use the following pred
 Define $pct\_harris_i$ as the percentage of voters supporting Vice President Harris and $pct\_trump_i$ as the percentage of voters supporting former President Trump in the poll with unique `poll_id`=*i*.
 
 Harris model:
+
 ```{=tex}
 \begin{align*} 
 pct\_harris_i &= \beta_0 + \beta_1 \cdot ns(end\_date\_num_i, df=5) + \beta_2 \cdot state_i + \beta_3 \cdot pollster_i + \beta_4 pollscore_i \\
@@ -289,8 +287,8 @@ pct\_harris_i &= \beta_0 + \beta_1 \cdot ns(end\_date\_num_i, df=5) + \beta_2 \c
 \beta_4 &\sim \mbox{Normal}(0, 5) 
 \end{align*}
 ```
-
 Trump model:
+
 ```{=tex}
 \begin{align*} 
 pct\_trump_i &= \beta_0 + \beta_1 \cdot ns(end\_date\_num_i, df=5) + \beta_2 \cdot state_i + \beta_3 \cdot pollster_i + \beta_4 pollscore_i \\
@@ -305,20 +303,21 @@ The model is run in R [@citeR] using the `rstanarm` package of @rstanarm. The de
 
 ### Model justification
 
-We use separate Bayesian regression models with the same predictors to estimate $pct\_harris$ and $pct\_trump$.  
+We use separate Bayesian regression models with the same predictors to estimate $pct\_harris$ and $pct\_trump$.
 
-because using only one model to predict support for Harris ($pct\_harris$) and calculating support for Trump, $pct\_trump$, as 100% - $pct\_harris$, or vice versa, would be insufficient and lead to inaccurate results because there are third-party candidates who will receive a small percentage of the vote nationally and in each of the battleground states. It is possible for either candidate to win the popular vote or a swing state with less than 50% of the vote because of third-party candidates, and simply assuming that  $pct\_trump$ = 1 - $pct\_harris$ (or vice versa) would not account for this. In 2020, President Biden won Arizona with and Georgia with. In 2016, Hillary Clinton beat former President Trump in the popular vote % to %.
+because using only one model to predict support for Harris ($pct\_harris$) and calculating support for Trump, $pct\_trump$, as 100% - $pct\_harris$, or vice versa, would be insufficient and lead to inaccurate results because there are third-party candidates who will receive a small percentage of the vote nationally and in each of the battleground states. It is possible for either candidate to win the popular vote or a swing state with less than 50% of the vote because of third-party candidates, and simply assuming that $pct\_trump$ = 1 - $pct\_harris$ (or vice versa) would not account for this. In 2020, President Biden won Arizona with and Georgia with. In 2016, Hillary Clinton beat former President Trump in the popular vote % to %.
 
 We used the default priors from `rstanarm` in both our models because using a normal prior with $\mu=50$ and $\sigma=10$ for the intercept of each model allows us to reflect the central tendencies of $pct\_harris$ and $pct\_trump$ and the prior knowledge from the @fivethirtyeight presidential polls that show a close race between Vice President Harris at the national popular vote level and in each of the seven battleground states [@rstanarm].
 
 Model validation and checking results can be found in [Appendix -@sec-model-details]
 
 ### Alternative model considered
-We initially used only one Bayesian regression model to predict $pct\_harris$ with `end_days_num` (spline term), `state`, `pollster`, and `pollscore` as predictors. We then calculated $pct\_trump$ as 1 - $pct\_harris$. This approach was insufficient and may have produced misleading or inaccurate results because there are third-party candidates who will receive a small percentage of the vote nationally and in each state, so Harris or Trump could win a state or the popular vote with less than 50%. 
+
+We initially used only one Bayesian regression model to predict $pct\_harris$ with `end_days_num` (spline term), `state`, `pollster`, and `pollscore` as predictors. We then calculated $pct\_trump$ as 1 - $pct\_harris$. This approach was insufficient and may have produced misleading or inaccurate results because there are third-party candidates who will receive a small percentage of the vote nationally and in each state, so Harris or Trump could win a state or the popular vote with less than 50%.
 
 ### Model weaknesses and limitations
-A limitation of our model is ...Support for Harris at a given time is not a predictor for support for Trump and vice versa
-The models used to predict support for Harris and Trump do not consider support for the other candidate at any given time. Support for Harris likely has a negative relationship with support for Trump; when support for Harris increases, support for Trump likely decreases. Third party candidates also matter when quantifying this and our models do not consider them at all.
+
+A limitation of our model is ...Support for Harris at a given time is not a predictor for support for Trump and vice versa The models used to predict support for Harris and Trump do not consider support for the other candidate at any given time. Support for Harris likely has a negative relationship with support for Trump; when support for Harris increases, support for Trump likely decreases. Third party candidates also matter when quantifying this and our models do not consider them at all.
 
 Another weakness in our model is the fact that it does not give higher-quality polls more weight or influence. Our A next step might be to give polls with a larger sample size or better pollscore more influence.
 
@@ -342,8 +341,11 @@ trump_model <-
 ```
 
 ## National Popular Vote Results
+
 <!-- Popular vote prediction after applying the Harris and Trump models. -->
-We applied the Harris model and the Trump model defined in @sec-modelsetup to predict candidate's share of the national popular vote.
+
+We applied the Harris model and the Trump model defined in @sec-modelsetup to predict each candidate's share of the national popular vote.
+
 ```{r}
 #| echo: false
 #| eval: true
@@ -557,9 +559,9 @@ ggplot() +
     alpha = 0.1,
     inherit.aes = FALSE
   ) +
-  annotate("text", x = max(combined_pred_summary$end_date_num), y = 48.3, 
+  annotate("text", x = max(combined_pred_summary$end_date_num) -0.5, y = 48.3, 
            label = "48.3", color = "blue", hjust = -0.2, size = 2) +  # Adjust size here
-  annotate("text", x = max(combined_pred_summary$end_date_num), y = 47.1, 
+  annotate("text", x = max(combined_pred_summary$end_date_num) - 0.5, y = 47.1, 
            label = "47.1", color = "red", hjust = -0.2, size = 2) +  # Adjust size here
   labs(
     x = "Days since Biden withdrew",
@@ -579,9 +581,9 @@ ggplot() +
     )
 ```
 
-## State-Level Results for the Seven Battleground States and Nebraska's Second Congressional District
+## State-Level Results for the Seven Battleground States and Nebraska's Second Congressional District #sec-42
 
-Vice President Harris starts out with 225 electoral college votes from states that went to both Hillary Clinton in 2016 and Joe Biden in 2020 [@270towin], including: . These states are considered safe or likely Democrat and available poling from @fivethirtyeight shows Vice President Harris with a lead outside the five percent margin of error and in most cases, a double-digit lead. Former President Trump starts out with 219 electoral college votes from states that he won in both 2016 and 2020 [@270towin], from the following states: . These states are considered safe or likely Republican and available polling data from @fivethirtyeight shows former President Trump with a lead outside the five percent margin of error, and in most cases, a double-digit lead. Therefore, the results of the Bayesian models presented in @sec-model focus on estimating support for Vice President Harris and former President Trump in Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, Pennsylvania, and Nebraska's second congressional district, which are worth a total of 94 electoral votes [@270towin].
+Vice President Harris starts out with 225 electoral college votes from states that went to both Hillary Clinton in 2016 and Joe Biden in 2020 [@270towin]. These states are considered safe or likely Democrat and available poling from @fivethirtyeight shows Vice President Harris with a lead outside the five percent margin of error and in most cases, a double-digit lead. Former President Trump starts out with 219 electoral college votes from states that he won in both 2016 and 2020 [@270towin]. These states are considered safe or likely Republican and available polling data from @fivethirtyeight shows former President Trump with a lead outside the five percent margin of error, and in most cases, a double-digit lead. For this reason, the results of the Bayesian models presented in @sec-model focus on estimating support for Vice President Harris and former President Trump in Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, Pennsylvania, and Nebraska's second congressional district, which are worth a total of 94 electoral votes [@270towin].
 
 We applied the Harris model and the Trump model defined in @sec-modelsetup at the state-level to predict the percentage of the vote that each candidate will receive in each of the seven battleground states. This will allow us to predict the winner of the electoral college and who will become the 47th President. @fig-swingresults shows the results of applying the Harris and Trump Bayesian models with spline at the state-level over time.
 
@@ -733,165 +735,68 @@ print(wi)
 print(ne2)
 ```
 
-@fig-swingresults shows former President Trump leading in Arizona, Nevada, Georgia, and North Carolina and Vice President Harris leading in Michigan, Wisconsin, Pennsylvania, and Nebraska's second congressional district as of October 29, 2024. If these results hold on election night, Vice President Harris would defeat former President Trump in the electoral college with exactly 270 electoral votes, compared to Trump's 268 electoral votes. Based on the results of the Bayesian models to predict support for Harris and Trump, Vice President Harris is likely to win Nebraska's second congressional district and its single electoral vote, but it is within the 5-point margin of error for either candidate to win any of the seven battleground states. This means that it is within the margin of error for Harris or Trump to win any combination of the seven battleground states, ranging from none of them to all of them. If Vice President Harris wins all seven battleground states, plus Nebraska-2, she would defeat former President Trump in the electoral college 319 to 219. If former President Trump wins all seven battleground states and loses Nebraska-2, he would defeat Vice President Harris in the electoral college 313 to 225. The electoral college results that fall within the range of likely values are summarized in
+@fig-swingresults shows former President Trump leading in Arizona, Nevada, Georgia, and North Carolina and Vice President Harris leading in Michigan, Wisconsin, Pennsylvania, and Nebraska's second congressional district as of October 29, 2024. The margins of error for Trump and Harris have little overlap for Nebraska CD-2, so we can predict that Harris will likely win its single electoral vote. Nebraska CD-2 will not be considered safe or likely Democratic because there is still overlap in the margins of error for Harris and Trump and it was not won by Clinton in 2016. The shaded margins of error for the seven battleground states have a lot of overlap; this means that it is within the margin of error for either candidate to win any of the seven battleground states.
+
+\newpage
+
+## Electoral College Results
+
+Before the seven key battleground states are decided, Vice President Harris has 225 electoral votes from safe and likely Democratic states and former President Trump has 219 from safe and likely Republican states [@270towin]. We use this starting point and the results from @sec-42 to predict the electoral college. 
 
 ```{r}
 #| echo: false
-#| eval: true
-#| message: false
 #| warning: false
+#| message: false
+#| eval: true
+#| include: true
+#| label: tbl-swingectable
+#| tbl-cap: Electoral votes for the seven battleground states and Nebraska CD-2
 
-# harris arizona
-harris_arizona <- harris_analysis_data |>
-  filter(state == "National" | state == "Arizona")
+library(tibble)
+setwd("/Users/talia/USPresidentialPollingForecast2024")
+electoral_votes <- read_csv("data/02-analysis_data/electoral_college_votes.csv")
+electoral_votes <- electoral_votes %>%
+  mutate(state = str_to_title(state))
 
-pollster_levels <- levels(harris_arizona$pollster)
+swing_states <- c("Arizona", "Nevada", "Georgia", "North Carolina", "Michigan", "Wisconsin",
+                  "Pennsylvania", "Nebraska-2")
 
-# Initialize a list to store predictions for each pollster
-all_pollster_preds <- list()
+swing_votes <- electoral_votes |>
+  filter(state %in% swing_states)
 
-# Loop over each pollster to generate predictions
-for (p in pollster_levels) {
-  # Create new data for each pollster
-  random_pollscore <- sample(c(-1.1, -1.5, -1.2), 1)
-  harris_new_data <- data.frame(
-    end_date_num = seq(
-      min(harris_arizona$end_date_num),
-      max(harris_arizona$end_date_num),
-      length.out = 100
-    ),
-    pollster = factor(p, levels = pollster_levels),
-    state = factor("Arizona", levels = levels(harris_arizona$state)),
-    pollscore = random_pollscore
-  )
-  
-  # Generate posterior predictions for this pollster
-  preds <- posterior_predict(harris_model, newdata = harris_new_data)
-  all_pollster_preds[[p]] <- preds  # Store in list
-}
+swing_votes_tibble <- tibble(
+  "State" = swing_votes$state,
+  "Electoral Votes" = swing_votes$electoral_votes
+)
 
-# Combine predictions across all pollsters
-# Convert list of matrices into a 3D array: [iterations, predictions, pollster]
-all_pollster_preds_array <- simplify2array(all_pollster_preds)
+kable(swing_votes_tibble)
+```
 
-# Calculate summary statistics across pollsters
-# Averaging predictions across pollsters at each iteration
-pred_mean <- apply(all_pollster_preds_array, c(1, 2), mean)
-pred_lower <- apply(all_pollster_preds_array, 2, quantile, probs = 0.025)
-pred_upper <- apply(all_pollster_preds_array, 2, quantile, probs = 0.975)
+If the results presented in @fig-swingresults hold on election night, and Harris and Trump win their safe and likely states, Harris would defeat Trump in the electoral college, 270 to 268. This is the mean estimate for the number of electoral college votes for Harris and Trump. If Vice President Harris wins all seven battleground states and Nebraska CD-2, she would defeat former President Trump in the electoral college 319 to 219. If former President Trump wins all seven battleground states, he would defeat Vice President Harris in the electoral college 313 to 225.
 
-# Combine these into a summary data frame
-harris_pred_summary_az <- harris_new_data %>%
-  mutate(
-    pred_mean = colMeans(pred_mean),
-    pred_lower = pred_lower,
-    pred_upper = pred_upper
-  )
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| eval: true
+#| include: true
+#| label: tbl-ec_results
+#| tbl-cap: The electoral college outcomes that fall within the margin of error for the seven battleground states.
 
-# trump arizona
-trump_arizona <- trump_analysis_data |>
-    filter(state == "National" | state == "Arizona")
+library(tibble)
 
-pollster_levels <- levels(trump_arizona$pollster)
+ec_results <- tibble(
+  " " = c("Harris Upper/Trump Lower Estimate", "Mean Estimate", "Harris Lower/Trump lower Estimate"),
+  "Harris" = c(319, 270, 225),
+  "Trump" = c(219, 268, 313)
+)
 
-# Initialize a list to store predictions for each pollster
-all_pollster_preds <- list()
-
-# Loop over each pollster to generate predictions
-for (p in pollster_levels) {
-  random_pollscore <- sample(c(-1.1, -1.5, -1.2), 1)
-  # Create new data for each pollster
-  trump_new_data <- data.frame(
-    end_date_num = seq(
-      min(trump_arizona$end_date_num),
-      max(trump_arizona$end_date_num),
-      length.out = 100
-    ),
-    pollster = factor(p, levels = pollster_levels),
-    state = factor("Arizona", levels = levels(trump_arizona$state)),
-    pollscore = random_pollscore
-  )
-  
-  # Generate posterior predictions for this pollster
-  preds <- posterior_predict(trump_model, newdata = trump_new_data)
-  all_pollster_preds[[p]] <- preds  # Store in list
-}
-
-# Combine predictions across all pollsters
-# Convert list of matrices into a 3D array: [iterations, predictions, pollster]
-all_pollster_preds_array <- simplify2array(all_pollster_preds)
-
-# Calculate summary statistics across pollsters
-# Averaging predictions across pollsters at each iteration
-pred_mean <- apply(all_pollster_preds_array, c(1, 2), mean)
-pred_lower <- apply(all_pollster_preds_array, 2, quantile, probs = 0.025)
-pred_upper <- apply(all_pollster_preds_array, 2, quantile, probs = 0.975)
-
-# Combine these into a summary data frame
-trump_pred_summary_az <- trump_new_data %>%
-  mutate(
-    pred_mean = colMeans(pred_mean),
-    pred_lower = pred_lower,
-    pred_upper = pred_upper
-  )
-
-# plot it
-harris_pred_summary_az <- harris_pred_summary_az %>%
-  mutate(candidate = "Kamala Harris")
-
-trump_pred_summary_az <- trump_pred_summary_az %>%
-  mutate(candidate = "Donald Trump")
-
-# Combine the data frames
-combined_pred_summary_az <- bind_rows(harris_pred_summary_az, trump_pred_summary_az)
-
-# Plot the combined data with both candidates' lines and ribbons
-arizona_plot <- ggplot() +
-  # Plot the original data points for Harris
-  geom_point(data = harris_analysis_data, aes(x = end_date_num, y = pct_harris, color = pollster), alpha = 0.6) +
-  # Plot the original data points for Trump
-  geom_point(data = trump_analysis_data, aes(x = end_date_num, y = pct_trump, color = pollster), alpha = 0.6) +
-  # Plot the prediction line for Kamala Harris
-  geom_line(
-    data = combined_pred_summary_az %>% filter(candidate == "Kamala Harris"),
-    aes(x = end_date_num, y = pred_mean, color = candidate),
-    inherit.aes = FALSE
-  ) +
-  # Plot the prediction line for Donald Trump
-  geom_line(
-    data = combined_pred_summary_az %>% filter(candidate == "Donald Trump"),
-    aes(x = end_date_num, y = pred_mean, color = candidate),
-    inherit.aes = FALSE
-  ) +
-  # Plot the prediction ribbon for Kamala Harris
-  geom_ribbon(
-    data = combined_pred_summary_az %>% filter(candidate == "Kamala Harris"),
-    aes(x = end_date_num, ymin = pred_lower, ymax = pred_upper, fill = candidate),
-    alpha = 0.1,
-    inherit.aes = FALSE
-  ) +
-  # Plot the prediction ribbon for Donald Trump
-  geom_ribbon(
-    data = combined_pred_summary_az %>% filter(candidate == "Donald Trump"),
-    aes(x = end_date_num, ymin = pred_lower, ymax = pred_upper, fill = candidate),
-    alpha = 0.1,
-    inherit.aes = FALSE
-  ) +
-  labs(
-    x = "Days since Biden withdrew",
-    y = "",
-    title = "Trump leads Harris in Arizona"
-  ) +
-  theme_minimal() +
-  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
-  scale_color_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-  scale_fill_manual(values = c("Kamala Harris" = "blue", "Donald Trump" = "red")) +
-  guides(color = guide_legend(title = ""), fill = guide_legend(title = "Candidate"))
+kable(ec_results)
 ```
 
 # Discussion {#sec-discussion}
 
-## Margin of error, close race, why either could win {#sec-first-point}
+## The margin of error and why Harris or Trump could win {#sec-first-point}
 
 If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this.
 
@@ -1002,7 +907,7 @@ The Siena College/New York Times (Times/Siena) poll is a collaboration between t
 
 ## Population and Sampling Frame
 
-The target population, defined by @tswd as the population that the Times/Siena poll aims to speak about, is registered voters and likely voters in the United States. Some polls conducted by Times/Siena have a target population of registered voters, while others use likely voters [@nytsienacrosstabs]. The sampling frame, defined by @tswd as the individuals from the target population that Times/Siena can get data about is drawn from various voter registration databases, including the L2 voter database [@nytsiena]. In polls for the 2024 presidential election, Times/Siena has put an emphasis on gathering nationally-representative and state-specific samples for the seven battleground states that decided the 2020 presidential election and are expected to decide the 2024 presidential election: Arizona, Nevada, Georgia, North Carolina, Michigan, Wisconsin, and Pennsylvania [@nytsiena]. A sampling frame that includes various voter registration databases helps ensure precise targeting and that the sample reflects the demographics of registered or likely voters in the upcoming U.S. election [@nytsiena].
+The target population, defined by @tswd is the population that the Times/Siena poll aims to speak about, is registered voters and likely voters in the United States. Some polls conducted by Times/Siena have a target population of registered voters, while others use likely voters [@nytsienacrosstabs]. The sampling frame, defined by @tswd as the individuals from the target population that Times/Siena can get data about is drawn from various voter registration databases, including the L2 voter database [@nytsiena]. In polls for the 2024 presidential election, Times/Siena has put an emphasis on gathering nationally-representative and state-specific samples for the seven battleground states that decided the 2020 presidential election and are expected to decide the 2024 presidential election: Arizona, Nevada, Georgia, North Carolina, Michigan, Wisconsin, and Pennsylvania [@nytsiena]. A sampling frame that includes various voter registration databases helps ensure precise targeting and that the sample reflects the demographics of registered or likely voters in the upcoming U.S. election [@nytsiena].
 
 ## Respondent Recruitment Strategy
 
