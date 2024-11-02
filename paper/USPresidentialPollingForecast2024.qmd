@@ -77,8 +77,9 @@ We cleaned this dataset to only include high-quality polls at the national and s
 
 <!-- Some paragraphs about how we go from a phenomena in the world to an entry in the dataset. -->
 
-Our primary measurement task is to measure American adults' opinions and translate that into who will win the 2024 presidential election. During presidential election cycles, different pollsters 
-During U.S. presidential and midterm election cycles, different pollsters conduct polls (surveys) to estimate support for Democratic, Republican, and third-party candidates and forecast the election results. Sampling and survey methodologies vary by pollster and we discuss the methodologies used by the Siena College/New York Times poll in [Appendix -@sec-pollster-meth]. Each poll aims to survey a population that is representative of the U.S. electorate or likely voters to predict the percentage of voters who will support each candidate and which candidate will win.
+Our primary measurement task is to measure someone's opinion and translate it into who will win the 2024 U.S. presidential election. During presidential election cycles, different pollsters conduct polls that use different methodologies to translate public opinion inro who will win the election. But, before there can be a presidential polling dataset, there must be a measurement of public opinion [@tswd]. Surveys are a common instrument for measuring public opinion during presidential election cycles [@tswd].
+
+During U.S. presidential and midterm election cycles, different pollsters conduct polls (surveys) to estimate support for Democratic, Republican, and third-party candidates and forecast the election results. Each poll aims to survey a population that is representative of likely voters and their opinions to predict the percentage of voters who will support each candidate and which candidate will win. Sampling and survey methodologies vary by pollster and we discuss the methodologies used by the Siena College/New York Times poll in [Appendix -@sec-pollster-meth]. 
 
 Our dataset from @fivethirtyeight is a a collection of presidential polls from different pollsters that were conducted during the 2024 presidential election cycle. Each entry represents the percentage of respondents to a unique poll supporting Vice President Harris (after July 21, 2024) or President Joe Biden (before July 21, 2024), former President Trump, and third-party candidates. Unique polls are identified by a poll id and each entry contains information about the poll, such as the pollster that conducted it, its population, sample size, and the methodology that was used and information about its quality and accuracy, including its numeric grade, pollscore, and transparency score.
 
@@ -130,7 +131,7 @@ kable(polling_table, format = "html", digits = 2)
 
 Based on our presidential polling data from @fivethirtyeight Vice President Harris leads former President Trump in the popular vote 50.5% to 48.0%. The margins in the seven battleground states are tight, with Vice President Harris leading in Nevada, Michigan, Wisconsin, and Nebraska's second congressional district and former President Trump leading in Arizona, Georgia, North Carolina. The two candidates are tied in Pennsylvania. The data set also includes state-level polls from likely Democratic states (Minnesota, New Hampshire, Virginia) and likely Republican states (Florida, Missouri, Montana, Nebraska, Ohio, Texas) that are not expected to determine the winner of the election [@270towin]. Support percentages for Harris and Trump are closer, but still have some variation among the seven battleground states. Harris' support in five of the seven battleground states is lower than her national support, while Trump's support in four of the seven battleground states is higher than his national support.
 
-Since President Biden ended his re-election campaign and Vice President Harris became the Democratic Presidential nominee, the polls have shown a close race between Vice President Harris and former President Trump. Polling averages for the six months leading up to election day, including from before President Biden withdrew on July 21, 2024 can be found in [Appendix -@sec-Biden]. @fig-nationalavg2 shows national polling averages for Harris and Trump since July 21 and @fig-sevenbattlegroundskamala shows state-level polling averages fo Harris and Trump in the seven battleground states and Nebraska's second congresional district.
+Since President Biden ended his re-election campaign and Vice President Harris became the Democratic Presidential nominee, the polls have shown a close race between Vice President Harris and former President Trump. Polling averages for the six months leading up to election day, including from before President Biden withdrew on July 21, 2024 can be found in [Appendix -@sec-Biden]. @fig-nationalavg2 shows national polling averages for Harris and Trump since July 21 and @fig-sevenbattlegroundskamala shows state-level polling averages fo Harris and Trump in the seven battleground states and Nebraska's second congressional district.
 
 Vice President Harris surpassed former President Trump in popular vote polls shortly after becoming the presumptive Democratic nominee in late July, but her lead narrowed in mid-August and the polls have been neck-and-neck since late August.
 
@@ -161,6 +162,8 @@ ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
   scale_y_continuous(limits = c(0, 60), labels = scales::percent_format(scale = 1)) +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %e")
 ```
+
+The changes in Harris and Trump's polling averages over time at the state level has varied among the seven battleground states and Nebraska's second congressional district. Trump has had a narrow lead over Harris in Arizona since early September. He has been leading over Harris in Georgia since she entered the race. Harris and Trump were tied in Michigan until early October, when Harris took the lead. There is not a lot of polling data for Nebraska's second congressional district, but Harris has had a wider lead there than either candidate has ever had in any of the seven battleground states since late September. Harris and Trump were virtually tied in North Carolina until Trump took a very narrow lead in October, and they are now virtually tied in Pennsylvania. Harris has had a narrow lead in Wisconsin since August.
 
 ```{r}
 #| label: fig-sevenbattlegroundskamala
@@ -193,7 +196,6 @@ ggplot(sevenbattlegrounds2, aes(x = end_date, y = pct, color = candidate_name)) 
 
 ### Variation in support for Harris and Trump by pollster and pollscore
 
-Talk more about it.
 
 ```{r}
 #| label: fig-pollsters2
