@@ -51,7 +51,8 @@ On Tuesday November 5, 2024, Americans will head to the polls to elect their 47t
 
 <!-- Estimands paragraph -->
 
-The estimands, defined by @tswd as the values we are trying to estimate, are the percentages of voters that support Vice President Harris and former President Trump at the national level, in each of the seven battleground states (Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania), and in Nebraska's second congressional district.
+The estimands, defined by @tswd as the values we are trying to estimate, are true effects of how long after Biden exited the race a poll was conducted
+the percentages of voters that support Vice President Harris and former President Trump at the national level, in each of the seven battleground states (Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania), and in Nebraska's second congressional district.
 
 <!-- Results paragraph -->
 
@@ -75,6 +76,7 @@ We cleaned this dataset to only include high-quality polls at the national and s
 
 <!-- Some paragraphs about how we go from a phenomena in the world to an entry in the dataset. -->
 
+Our primary measurement task is to measure American adults' opinions and translate that into who will win the 2024 presidential election. During presidential election cycles, different pollsters 
 During U.S. presidential and midterm election cycles, different pollsters conduct polls (surveys) to estimate support for Democratic, Republican, and third-party candidates and forecast the election results. Sampling and survey methodologies vary by pollster and we discuss the methodologies used by the Siena College/New York Times poll in [Appendix -@sec-pollster-meth]. Each poll aims to survey a population that is representative of the U.S. electorate or likely voters to predict the percentage of voters who will support each candidate and which candidate will win.
 
 Our dataset from @fivethirtyeight is a a collection of presidential polls from different pollsters that were conducted during the 2024 presidential election cycle. Each entry represents the percentage of respondents to a unique poll supporting Vice President Harris (after July 21, 2024) or President Joe Biden (before July 21, 2024), former President Trump, and third-party candidates. Unique polls are identified by a poll id and each entry contains information about the poll, such as the pollster that conducted it, its population, sample size, and the methodology that was used and information about its quality and accuracy, including its numeric grade, pollscore, and transparency score.
