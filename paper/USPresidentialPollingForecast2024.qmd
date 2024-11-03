@@ -271,7 +271,7 @@ kable(avg_pollscore_table, col.names = c("Pollster", "Pollscore", "Numeric Grade
 
 # Model {#sec-model}
 
-The goal of our modeling strategy is to use a Bayesian model to investigate the relationship between the percentage of voters in a poll who support Vice President Harris or Former President Trump and the date the poll was conducted, the state (or if it was a national poll), the pollster who conducted the poll, and the pollscore it received. Model details and diagnostics are presented in [Appendix -@sec-model-details]. We use two Bayesian regression models, one each to model the percentage of voters supporting Vice President Harris, $pct\_harris$ and the percentage of voters supporting former President Trump, $pct\_trump$.
+The goal of our modeling strategy is to use a Bayesian model to investigate the relationship between the percentage of voters in a poll who support Vice President Harris or Former President Trump and the date the poll was conducted, the state (or if it was a national poll), the pollster who conducted the poll, and the pollscore it received. Model details, validation, checking, and diagonstics are presented in [Appendix -@sec-model-details]. We use two Bayesian regression models, one each to model the percentage of voters supporting Vice President Harris, $pct\_harris$ and the percentage of voters supporting former President Trump, $pct\_trump$.
 
 The models to predict $pct\_harris$ and $pct\_trump$ both use the following predictors:
 
