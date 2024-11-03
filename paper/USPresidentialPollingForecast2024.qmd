@@ -934,7 +934,7 @@ Times/Siena recruits respondents for its poll at random, from a national list of
 
 ## Polling averages from before President Joe Biden ended his re-election campaign {#sec-Biden}
 
-<!-- It is impossible to quantify or model the effects of Biden's unprecedented decision to end his re-election campaign in July 2024. There is no established methodology for analyzing this, so we made the decision to focus on Harris versus Trump polling from after July 21, 2024 because they are the two major presidential nominees. For this reason, national and swing-state polling averages in the six months leading up to election day are shown here. -->
+It is impossible to quantify or model the effects of Biden's unprecedented decision to end his re-election campaign in July 2024. There is no established methodology for analyzing this, so we made the decision to focus on Harris versus Trump polling from after July 21, 2024 because they are the two major presidential nominees. National and swing-state polling averages in the six months leading up to election day are shown in @fig-nationalavg and @fig-sevenbattlegrounds.
 
 ```{r}
 #| label: fig-nationalavg
@@ -1006,7 +1006,7 @@ ggplot(sevenbattlegrounds, aes(x = end_date, y = pct, color = party)) +
 
 # Model details {#sec-model-details}
 
-Model summary is shown in @tbl-model-summary
+The model summaries are shown in @tbl-model-summary
 
 ```{r}
 #| echo: false
@@ -1031,9 +1031,7 @@ modelsummary::modelsummary(
 
 ### Harris Model
 
-In @fig-ppcheckandposteriorvspriorharris-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvspriorharris-2 we compare the posterior with the prior. This shows...
+In @fig-ppcheckandposteriorvspriorharris-1 we implement a posterior predictive check. This shows the comparison of the actual outcome variable, $pct\_harris$, with simulations from the posterior distribution [@tswd]. @fig-ppcheckandposteriorvspriorharris-2 shows a comparison of the posterior with the prior.
 
 ```{r}
 #| eval: true
@@ -1048,24 +1046,21 @@ In @fig-ppcheckandposteriorvspriorharris-2 we compare the posterior with the pri
 # library(bayesplot)
 # library(splines)
 # library(ggplot2)
-# 
-# pp_check(harris_model) +
-#   theme_classic() +
-#   theme(legend.position = "bottom")
-# 
-# posterior_vs_prior(harris_model) +
-#   theme_minimal() +
-#   scale_color_brewer(palette = "Set1") +
-#   theme(legend.position = "bottom") +
-#   coord_flip()
+
+pp_check(harris_model) +
+  theme_classic() +
+  theme(legend.position = "bottom")
+
+posterior_vs_prior(harris_model) +
+  theme_minimal() +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.position = "bottom") +
+  coord_flip()
 ```
 
 ### Trump Model
 
-In @fig-ppcheckandposteriorvspriortrump-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvspriortrump-2 we compare the posterior with the prior. This shows...
-
+In @fig-ppcheckandposteriorvspriortrump-1 we implement a posterior predictive check. It shows the comparison of the actual outcome variable, $pct\_trump$, with simulations from the posterior distribution [@tswd]. @fig-ppcheckandposteriorvspriortrump-2 shows a comparison of the posterior with the prior.
 ```{r}
 #| eval: true
 #| echo: false
@@ -1073,30 +1068,56 @@ In @fig-ppcheckandposteriorvspriortrump-2 we compare the posterior with the prio
 #| warning: false
 #| label: fig-ppcheckandposteriorvspriortrump
 #| layout-ncol: 2
-#| fig-cap: "Examining how the model for support for Trump, and is affected by, the data"
+#| fig-cap: "Examining how the model for support for Trump fits, and is affected by, the data"
 #| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
 
 # library(bayesplot)
 # library(splines)
-# 
-# pp_check(trump_model) +
-#   theme_classic() +
-#   theme(legend.position = "bottom")
-# 
-# posterior_vs_prior(trump_model) +
-#   theme_minimal() +
-#   scale_color_brewer(palette = "Set1") +
-#   theme(legend.position = "bottom") +
-#   coord_flip()
+
+pp_check(trump_model) +
+  theme_classic() +
+  theme(legend.position = "bottom")
+
+posterior_vs_prior(trump_model) +
+  theme_minimal() +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.position = "bottom") +
+  coord_flip()
+```
+## Distribution
+
+Credibility intervals are the equivalent of confidence intervals when using a Bayesian model [@tswd]. We use Bayesian estimation to get a distribution for each coefficient. @fig-harrisarea shows the 95% credibility intervals for the coefficients in the Harris model. @fig-trumparea shows the 95% credibility intervals for the coefficients in the Trump model. There is a 95% probability mass between the two ends of the 95% credibility interval [@tswd].
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-harrisarea
+#| fig-cap: "95% credibility intervals for the Harris model"
+plot(
+  harris_model,
+  "areas"
+)
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-trumparea
+#| fig-cap: "95% credibility intervals for the Trump model"
+plot(
+  trump_model,
+  "areas"
+)
 ```
 
 ## Model Diagnostics
 
 ### Harris Model
 
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
+@fig-stanareyouokay-1 is a trace plot. It shows lines that bounce, are horizontal, and have some overlap between the chains. This suggests that there is nothing out of the ordinary with the Harris model [@tswd]. @fig-stanareyouokay-2 is a Rhat plot. It shows that everything is very close to 1. This suggests that there are no problems with our Harris model and we do not need to simplify it, remove predictors, modify predictors, use different priors, or re-run [@tswd].
 
 ```{r}
 #| echo: false
@@ -1116,9 +1137,7 @@ plot(harris_model, "rhat")
 
 ### Trump Model
 
-@fig-trumpdiagnostics-1 is a trace plot. It shows... This suggests...
-
-@fig-trumpdiagnostics-2 is a Rhat plot. It shows... This suggests...
+@fig-trumpdiagnostics-1 is a trace plot. It shows lines that bounce, are horizontal, and have some overlap between the chains. This suggests that there is nothing out of the ordinary with our Trump model [@tswd]. @fig-trumpdiagnostics-2 is a Rhat plot. It shows that everything is very close to 1. This suggests that there are no problems with our Trump model and we do not need to simplify it, remove predictors, modify predictors, use different priors, or re-run it [@tswd].
 
 ```{r}
 #| echo: false
