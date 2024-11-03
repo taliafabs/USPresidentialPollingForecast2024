@@ -202,6 +202,8 @@ ggplot(sevenbattlegrounds2, aes(x = end_date, y = pct, color = candidate_name)) 
 
 ### Variation in support for Harris and Trump by pollster and pollscore
 
+Individual pollsters can produce results that are skewed in favor of either candidate. This can be caused by differences in methodology, respondent recruitment, sample size, or how non-responses are handled \[@nytsiena\]. Overall, the different pollsters within our dataset have shown very close polling averages for Harris and Trump, but there is some variation. @fig-pollsters2 shows that Harris and Trump national polling averages within our dataset vary by pollster. Siena/NYT polls showed Harris and Trump virtually tied until mid-September when Harris took a narrow lead, but have been virtually tied again since mid-October. YouGov polls have shown a narrow lead for Harris since mid-August and Marquette Law School polls have shown a shrinking lead for Harris since she became the Democratic nominee. Support for Harris and Trump within a poll can be affected by the pollster that conducted it. We "pool the polls", or average the results from different polls to balance out pollster biases \[@Pasek2015\]. There are fewer CES/YouGov and McCourtney Institute/YouGov polls in our dataset, but they have both shown a narrow lead for Harris.
+
 ```{r}
 #| label: fig-pollsters2
 #| fig-cap:  Harris and Trump polling averages vary by pollster. The lines are moving poll averages for each candidate in the seven battleground states. The points are individual polls. The color of each point indicates which candidate lead in the poll.
@@ -210,7 +212,7 @@ ggplot(sevenbattlegrounds2, aes(x = end_date, y = pct, color = candidate_name)) 
 #| message: false
 
 harris_versus_trump <- analysis_data |>
-  filter(end_date >= as.Date("2024-07-21"))
+  filter((candidate_name == "Kamala Harris" | candidate_name == "Donald Trump"), end_date >= as.Date("2024-07-21"))
 
 ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
   stat_summary(geom = "line", fun = mean) +      
@@ -228,7 +230,7 @@ ggplot(national2, aes(x = end_date, y = pct, color = candidate_name)) +
   facet_wrap(~pollster)
 ```
 
-@tbl-pollscore-table shows the different pollscores that appear in our dataset and how often they appear.
+Pollscore indicates whether a pollscore is more accurate than a theoretical replacement-level pollscore that polled the exact same election and a negative pollscore is better [@MorrisBestPollsters]. Our dataset only includes high-quality polls with a numeric grade of 3, which means they have negative pollscores, excellent transparency, and high accuracy [@MorrisBestPollsters]. The pollster in our dataset with the best pollscore is Siena/NYT and its polling averages for Harris and Trump have varied from other pollsters. We will consider the effects of pollscore on the percentage of respondents to a poll that support Harris and Trump.
 
 ```{r}
 #| label: tbl-pollscore-table
@@ -313,27 +315,18 @@ The models are run in R [@citeR] using the `rstanarm` package of @rstanarm. The 
 
 ### Model justification
 
-We use separate Bayesian regression models with the same predictors to estimate $pct\_harris$ and $pct\_trump$.
-
-because using only one model to predict support for Harris ($pct\_harris$) and calculating support for Trump, $pct\_trump$, as 100% - $pct\_harris$, or vice versa, would be insufficient and lead to inaccurate results because there are third-party candidates who will receive a small percentage of the vote nationally and in each of the battleground states. It is possible for either candidate to win the popular vote or a swing state with less than 50% of the vote because of third-party candidates, and simply assuming that $pct\_trump$ = 1 - $pct\_harris$ (or vice versa) would not account for this. In 2020, President Biden won Arizona with and Georgia with. In 2016, Hillary Clinton beat former President Trump in the popular vote % to %.
+We use separate Bayesian regression models with the same predictors to estimate $pct\_harris$ and $pct\_trump$. This allows us to predict the percentage of voters supporting Vice President Harris and former President Trump, using the same high quality polls from @fivethirtyeight and the same predictors. We use `end_date_num` (number of days since President Biden ended his campaign on July 21, 2024) as the spline term because we want our Harris model to account for changes $pct\_harris$, in and our Trump model to account for changes in $pct\_trump$ over time. We use state, pollster, and pollscore as predictors to account for changes in . and . at the national or state-level, across different pollsters, and different pollscores. The Harris model is trained on Vice President Harris’ polling data and the Trump model is trained on former President Trump’s polling data from @fivethirtyeight.
 
 We used the default priors from `rstanarm` in both our models because using a normal prior with $\mu=50$ and $\sigma=10$ for the intercept of each model allows us to reflect the central tendencies of $pct\_harris$ and $pct\_trump$ and the prior knowledge from the @fivethirtyeight presidential polls that show a close race between Vice President Harris at the national popular vote level and in each of the seven battleground states [@rstanarm].
 
-Model validation and checking results can be found in [Appendix -@sec-model-details]
-
-### Alternative model considered
-
-We initially used only one Bayesian regression model to predict $pct\_harris$ with `end_days_num` (spline term), `state`, `pollster`, and `pollscore` as predictors. We then calculated $pct\_trump$ as 1 - $pct\_harris$. This approach was insufficient and may have produced misleading or inaccurate results because there are third-party candidates who will receive a small percentage of the vote nationally and in each state, so Harris or Trump could win a state or the popular vote with less than 50%.
+Initially, we considered using a single Bayesian regression model to predict $pct\_harris$, using `end_days_num` (spline term), `state`, `pollster`, and `pollscore` as predictors. If we used this single Bayesian regression model, we would have calculated $pct\_trump$ as 100% - $pct\_harris$. Calculating the percentage of voters supporting Trump as 100% minus the percentage of voters for Harris would have been insufficient because there are third-party candidates who will receive a small percentage of the vote nationally and in each of the seven battleground states. This may have produced inaccurate or misleading results because either Harris or Trump could win the popular vote or a swing state with less than 50% of the vote [@fivethirtyeight]. We would have assumed that if Harris received less than 50% of the vote, she would have lost, even though this is not always the case. President Biden won the swing states of Arizona, Georgia, and Wisconsin in 2020 with less than 50% of the vote [@results2020]. Former President Trump won Wisconsin, Michigan, Pennsylvania, and Arizona in 2016 with less than 50% of the vote [@results2016]. With many presidential polls this election cycle showing a statistical tie between Harris and Trump in the popular vote and electoral college, calculating Trump’s support this way could overestimate it by a few percentage points and produce an inaccurate or misleading result [@silvergut].
 
 ### Model weaknesses and limitations
-
-A limitation of our model is ...Support for Harris at a given time is not a predictor for support for Trump and vice versa The models used to predict support for Harris and Trump do not consider support for the other candidate at any given time. Support for Harris likely has a negative relationship with support for Trump; when support for Harris increases, support for Trump likely decreases. Third party candidates also matter when quantifying this and our models do not consider them at all.
-
-Another weakness in our model is the fact that it does not give higher-quality polls more weight or influence. Our A next step might be to give polls with a larger sample size or better pollscore more influence.
+The use of two separate models to predict the percentage of voters supporting Vice President Harris and the percentage of voters supporting former President Trump has weaknesses and limitations. We do not use support for Harris as a predictor in the Trump model or support for Trump as a predictor in the Harris model. However, we know that as support for Harris at the national level or in one of the seven battleground states increases, support for Trump decreases (and vice versa). We could improve our model by adding support for Harris as a spline term in our Trump model and support for Trump as a spline term in our Harris model. This would allow us to use changes in support for Harris over time to predict support for Trump and changes in support for Trump over time to predict support for Harris. Our models do not give higher quality polls or polls with a larger sample size more weight. Our dataset only includes polls with a numeric grade of 3, so this is likely not an issue when we apply our models to it. We did not consider sample size when cleaning our data or building our models because we only included high-quality polls in the 99th percentile for accuracy and transparency. If our models were applied to a larger dataset that includes polls with different numeric grades, these could be weaknesses. 
 
 # Results {#sec-results}
 
-<!-- The model results and model summary are presented in [Appendix -@sec-model-details]. -->
+Model results and model summary are presented in [Appendix @sec-model-details].
 
 ```{r}
 #| echo: false
@@ -808,17 +801,25 @@ kable(ec_results)
 
 ## Why Harris or Trump could win {#sec-first-point}
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this.
+Vice President Harris and former President Trump have been deadlocked in national and state-level polls in Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania since the summer. Our results presented in @sec-results show Harris leading Trump 48.3% to 47.1% in the popular vote and 270 to 268 in the electoral college. Our electoral college prediction is based on narrow leads for Harris in Wisconsin, Michigan, and Pennsylvania and narrow leads for Trump in Arizona, Nevada, Georgia, and North Carolina. Harris' popular vote lead and all of Harris' and Trump's leads in the seven battleground states fall well within the margin of error.
+
+A normal polling error could swing the popular vote and the seven battleground states in either candidate's favor. @silvergut found that the average polling miss is 3 to 4 percentage points. If either Harris or Trump outperforms their swing state and national polling averages by 3 to 4 percentage points, they would win the popular vote and sweep the seven battleground states. This would result in Harris winning the electoral college 319 to 219 or Trump winning the electoral college 313 to 226 and it is within the margin of error shown in @sec-results.
 
 ## Polling misses in 2016, 2020, and 2022
 
 Discuss polling flaws in 2016 and 2020, how support for Trump was underestimated. Discuss how this was overcorrected in 2022, and how support for GOP house and senate candidates was overestimated. Discuss Trump's unique appeal to a certain segment of the electorate. Refer to Nate Silver articles.
 
-## Something else about polling, nonresponse, and how a repeat of any of these flaws could swing the race either way
+In the 2016 and 2020 presidential elections, polls underestimated support for former President Trump. In 2020, 93% of national polls overestimated President Biden's support and underestimated former President Trump's support among voters
 
 ## Weaknesses, limitations, and next steps
 
+Harris and Trump have been deadlocked in national and battleground state-level polls this election cycle. In @sec-results, we predicted that Vice President Harris will win the popular vote to and the electoral college 270 to 268. These are razor-thin margins, indicative of a statistical tie.
+
+Pollsters have made extensive efforts to correct their polling misses from 2016 and 2020, which led them to predict that Democratic nominee Hillary Clinton would win the 2016 election and President Biden would win the 2020 popular vote and swing states by larger margins than he actually did.
+
 Biden's withdrawal, use of two models, no third-party candidates, only national popular vote and swing states were analyzed, we did not consider how the pollsters in our dataset handled nonresponse when modeling. Weaknesses and next steps should also be included.
+
+Once the results of the 2024 U.S. presidential elections are in, our next step will be to compare the actual results to the polls and our own forecast and investigate why the polls were accurate or inaccurate. If the results are within the margin of error, we will know that the polls accurately predicted a close race. If Harris or Trump wins in a landslide (i.e. wins all the battleground states, some by a margin outside the margin of error, or flips any of the losing candidate's safe/likely states, wins the popular vote by a margin outside the MOE), we will take a deeper dive into 2024 polling methodologies, what was done to correct past polling misses, and why it failed.
 
 \newpage
 
@@ -925,11 +926,7 @@ Times/Siena recruits respondents for its poll at random, from a national list of
 
 ## Sampling Approch and Trade-offs
 
-## Strengths and Limitations of Methodology
-
-### Strengths
-
-### Limitations
+## Strengths and limitations of The Siena College/New York Times methodology
 
 # Additional data details
 
