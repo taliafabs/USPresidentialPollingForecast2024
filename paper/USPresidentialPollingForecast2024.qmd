@@ -202,7 +202,7 @@ ggplot(sevenbattlegrounds2, aes(x = end_date, y = pct, color = candidate_name)) 
 
 ### Variation in support for Harris and Trump by pollster and pollscore
 
-Individual pollsters can produce results that are skewed in favor of either candidate. This can be caused by differences in methodology, respondent recruitment, sample size, or how non-responses are handled \[@nytsiena\]. Overall, the different pollsters within our dataset have shown very close polling averages for Harris and Trump, but there is some variation. @fig-pollsters2 shows that Harris and Trump national polling averages within our dataset vary by pollster. Siena/NYT polls showed Harris and Trump virtually tied until mid-September when Harris took a narrow lead, but have been virtually tied again since mid-October. YouGov polls have shown a narrow lead for Harris since mid-August and Marquette Law School polls have shown a shrinking lead for Harris since she became the Democratic nominee. Support for Harris and Trump within a poll can be affected by the pollster that conducted it. We "pool the polls", or average the results from different polls to balance out pollster biases \[@Pasek2015\]. There are fewer CES/YouGov and McCourtney Institute/YouGov polls in our dataset, but they have both shown a narrow lead for Harris.
+Individual pollsters can produce results that are skewed in favor of either candidate. This can be caused by differences in methodology, respondent recruitment, sample size, or how non-responses are handled [@nytsiena]. Overall, the different pollsters within our dataset have shown very close polling averages for Harris and Trump, but there is some variation. @fig-pollsters2 shows that Harris and Trump national polling averages within our dataset vary by pollster. Siena/NYT polls showed Harris and Trump virtually tied until mid-September when Harris took a narrow lead, but have been virtually tied again since mid-October. YouGov polls have shown a narrow lead for Harris since mid-August and Marquette Law School polls have shown a shrinking lead for Harris since she became the Democratic nominee. Support for Harris and Trump within a poll can be affected by the pollster that conducted it. We "pool the polls", or average the results from different polls to balance out pollster biases [@Pasek2015]. There are fewer CES/YouGov and McCourtney Institute/YouGov polls in our dataset, but they have both shown a narrow lead for Harris.
 
 ```{r}
 #| label: fig-pollsters2
@@ -322,7 +322,8 @@ We used the default priors from `rstanarm` in both our models because using a no
 Initially, we considered using a single Bayesian regression model to predict $pct\_harris$, using `end_days_num` (spline term), `state`, `pollster`, and `pollscore` as predictors. If we used this single Bayesian regression model, we would have calculated $pct\_trump$ as 100% - $pct\_harris$. Calculating the percentage of voters supporting Trump as 100% minus the percentage of voters for Harris would have been insufficient because there are third-party candidates who will receive a small percentage of the vote nationally and in each of the seven battleground states. This may have produced inaccurate or misleading results because either Harris or Trump could win the popular vote or a swing state with less than 50% of the vote [@fivethirtyeight]. We would have assumed that if Harris received less than 50% of the vote, she would have lost, even though this is not always the case. President Biden won the swing states of Arizona, Georgia, and Wisconsin in 2020 with less than 50% of the vote [@results2020]. Former President Trump won Wisconsin, Michigan, Pennsylvania, and Arizona in 2016 with less than 50% of the vote [@results2016]. With many presidential polls this election cycle showing a statistical tie between Harris and Trump in the popular vote and electoral college, calculating Trump’s support this way could overestimate it by a few percentage points and produce an inaccurate or misleading result [@silvergut].
 
 ### Model weaknesses and limitations
-The use of two separate models to predict the percentage of voters supporting Vice President Harris and the percentage of voters supporting former President Trump has weaknesses and limitations. We do not use support for Harris as a predictor in the Trump model or support for Trump as a predictor in the Harris model. However, we know that as support for Harris at the national level or in one of the seven battleground states increases, support for Trump decreases (and vice versa). We could improve our model by adding support for Harris as a spline term in our Trump model and support for Trump as a spline term in our Harris model. This would allow us to use changes in support for Harris over time to predict support for Trump and changes in support for Trump over time to predict support for Harris. Our models do not give higher quality polls or polls with a larger sample size more weight. Our dataset only includes polls with a numeric grade of 3, so this is likely not an issue when we apply our models to it. We did not consider sample size when cleaning our data or building our models because we only included high-quality polls in the 99th percentile for accuracy and transparency. If our models were applied to a larger dataset that includes polls with different numeric grades, these could be weaknesses. 
+
+The use of two separate models to predict the percentage of voters supporting Vice President Harris and the percentage of voters supporting former President Trump has weaknesses and limitations. We do not use support for Harris as a predictor in the Trump model or support for Trump as a predictor in the Harris model. However, we know that as support for Harris at the national level or in one of the seven battleground states increases, support for Trump decreases (and vice versa). We could improve our model by adding support for Harris as a spline term in our Trump model and support for Trump as a spline term in our Harris model. This would allow us to use changes in support for Harris over time to predict support for Trump and changes in support for Trump over time to predict support for Harris. Our models do not give higher quality polls or polls with a larger sample size more weight. Our dataset only includes polls with a numeric grade of 3, so this is likely not an issue when we apply our models to it. We did not consider sample size when cleaning our data or building our models because we only included high-quality polls in the 99th percentile for accuracy and transparency. If our models were applied to a larger dataset that includes polls with different numeric grades, these could be weaknesses.
 
 # Results {#sec-results}
 
@@ -801,17 +802,25 @@ kable(ec_results)
 
 ## Why Harris or Trump could win {#sec-first-point}
 
-Vice President Harris and former President Trump have been deadlocked in national and state-level polls in Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania since the summer. Our results presented in @sec-results show Harris leading Trump 48.3% to 47.1% in the popular vote and 270 to 268 in the electoral college. Our electoral college prediction is based on narrow leads for Harris in Wisconsin, Michigan, and Pennsylvania and narrow leads for Trump in Arizona, Nevada, Georgia, and North Carolina. Harris' popular vote lead and all of Harris' and Trump's leads in the seven battleground states fall well within the margin of error.
+The 2024 U.S. presidential election is a tossup. Vice President Harris and former President Trump have been polling within a few percentage points of each other in national and state-level polls in Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania since the summer [@silvergut]. Our results presented in @sec-results show Harris leading Trump 48.3% to 47.1% in the popular vote and 270 to 268 in the electoral college. Our electoral college prediction is based on narrow leads for Harris in Wisconsin, Michigan, and Pennsylvania and narrow leads for Trump in Arizona, Nevada, Georgia, and North Carolina. Harris' popular vote lead and all of Harris' and Trump's leads in the seven battleground states fall well within the margin of error. Fifty-fifty is the only reasonable forecast that we can draw from this [@silvergut]. It is possible that these fifty-fifty forecasts are wrong, and both candidates are equally likely to overperform them and win the election comfortably [@silvergut].
 
-A normal polling error could swing the popular vote and the seven battleground states in either candidate's favor. @silvergut found that the average polling miss is 3 to 4 percentage points. If either Harris or Trump outperforms their swing state and national polling averages by 3 to 4 percentage points, they would win the popular vote and sweep the seven battleground states. This would result in Harris winning the electoral college 319 to 219 or Trump winning the electoral college 313 to 226 and it is within the margin of error shown in @sec-results.
+A normal polling error could swing the popular vote and the seven battleground states in either candidate's favor. @silvergut found that the average polling miss is 3 to 4 percentage points. If either Harris or Trump outperforms their swing state and national polling averages by 3 to 4 percentage points, they would win the popular vote, sweep the seven battleground states, and win the electoral college comfortably [@silvergut]. This would result in Harris winning the electoral college 319 to 219 or Trump winning the electoral college 313 to 226; both of these results are within the margin of error shown in @sec-results.
+
+Vice President Harris could outperform her polling averages and win the election if
+
+Trump could ...
 
 ## Polling misses in 2016, 2020, and 2022
 
-Discuss polling flaws in 2016 and 2020, how support for Trump was underestimated. Discuss how this was overcorrected in 2022, and how support for GOP house and senate candidates was overestimated. Discuss Trump's unique appeal to a certain segment of the electorate. Refer to Nate Silver articles.
+Polls underestimated support for former President Trump in the 2016 and 2020 presidential elections. Non-response bias, specifically how pollsters handled non-responses, is a major reason for this because
 
-In the 2016 and 2020 presidential elections, polls underestimated support for former President Trump. In 2020, 93% of national polls overestimated President Biden's support and underestimated former President Trump's support among voters
+In 2020, 93% of national polls overestimated support for President Biden and underestimated support for Trump among likely voters [@kennedy2021]. Biden won the 2020 presidential election, but by a smaller popular vote margin and swing state margins than the polls predicted. @silvergut suggests that the fact that Democrats were more likely to stay home because of Covid restrictions and as a result, had more time to answer phone calls or respond to online surveys may have contributed to the 2020 polling misses.
 
-## Weaknesses, limitations, and next steps
+<!-- Discuss polling flaws in 2016 and 2020, how support for Trump was underestimated. Discuss how this was overcorrected in 2022, and how support for GOP house and senate candidates was overestimated. Discuss Trump's unique appeal to a certain segment of the electorate. Refer to Nate Silver articles. -->
+
+<!-- In the 2016 and 2020 presidential elections, polls underestimated support for former President Trump. In 2020, 93% of national polls overestimated President Biden's support and underestimated former President Trump's support among voters -->
+
+## Weaknesses, limitations, and next steps {#sec-nytsienaweak}
 
 Harris and Trump have been deadlocked in national and battleground state-level polls this election cycle. In @sec-results, we predicted that Vice President Harris will win the popular vote to and the electoral college 270 to 268. These are razor-thin margins, indicative of a statistical tie.
 
@@ -831,27 +840,25 @@ Once the results of the 2024 U.S. presidential elections are in, our next step w
 
 ## Survey objectives
 
+This idealized methodology outlines a plan to conduct a survey to forecast the 2024 U.S. presidential election with a budget of \$100,000 USD. It includes plans for a sampling approach, respondent recruitment, data validation, and survey design. The Times/Siena polls were within an average of two percentage points of the actual results during the 2022 mid-term election cycle. All polls and survey methodologies have weaknesses and limitations, so we will aim to correct the ones we found in @sec-nytsienaweak.
+
 ## Sampling approach
 
-The target population for our idealized survey is likely voters in the United States. We will use the L2 voter database from @L2 to build a representative sampling frame. The L2 voter database is one of the most trusted sources for enhanced voter data and it includes detailed demographics and voting history data [@L2]. Using this data set is the first step towards ensuring that our sample aligns with the general electorate and is representative of likely voters so that we can sample precisely.
+The target population, defined by @tswd as the population that we would like to represent in our survey, is likely voters in the United States. The sampling frame, defined by @tswd as potential respondents from the target population, is voters from the L2 database [@L2]. We will use the L2 voter database to build a representative sampling frame. The L2 voter database is one of the most trusted sources for enhanced voter data and it includes detailed demographics and voting history data [@L2]. Using this data set is the first step towards ensuring that our sample aligns with the general electorate and is representative of likely voters so that we can sample precisely.
 
-We will use a stratified sampling approach to closely examine voter demographics. Stratified sampling allows us to look at every stratum and carry out simple random sampling with those strata [@tswd]. Its main goal is to ensure that every strata of the population is represented [@Neyman1934]. We selected stratified sampling because it will allow us to have representation within the subgroups that we are interested in and it has a reduced sampling error and improved accuracy rate [@tswd]. We considered simple random sampling, but ultimately chose stratified sampling instead because it tends to produce more precise accurates when used to forecast U.S. elections [@pewhacking]. The U.S. election is decided by the electoral college, not the popular vote so we will oversample from the seven battleground states that are expected to decide the 2024 election: Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania [@fivethirtyeight]. Oversampling from the swing states will allow us to put an emphasis on forecasting their results and increase the accuracy of our electoral college estimate. Our target sample size of 100,000 respondents will provide a margin of error of 2% at a 95% confidence level; this will allow us to be precise while still accounting for budgetary constraints [@pewhacking].
+We will combine probability and non-probability based sampling methods within the strata to make the most of our resources and improve the reach of our survey [@MercerLau2023]. Probability based methods ensure that each individual in the sampling frame has a known, non-zero chase of being selected and allow for results to be generalized to the broader population [@tswd]. Non-probability based methods select individuals in a way that does not give each member of the sampling frame a known probability if being selected [@tswd].
+
+We will use a stratified sampling (probability-based) approach to closely examine voter demographics. Stratified sampling allows us to look at every stratum and carry out simple random sampling with those strata [@tswd]. Its main goal is to ensure that every strata of the population is represented [@Neyman1934]. We selected stratified sampling because it will allow us to have representation within the subgroups that we are interested in and it has a reduced sampling error and improved accuracy rate [@tswd]. We considered simple random sampling, but ultimately chose stratified sampling instead because it tends to produce more precise estimates when used to forecast U.S. elections [@pewhacking].
+
+In 2016 and 2020 presidential election polls underestimated support for Trump because they did not reach out to enough non-college educated, white respondents from rural areas who were more likely to support Trump but less likely to respond to a pollster [@silvergut]. We will use respondent-driven sampling, which is a non-probability based method, to reach hard-to-reach populations [@raifman2021]. @raifman2021 found that respondent-driven sampling is well equipped to reach members of hard-to-reach populations who are least likely to respond to a survey.
+
+The U.S. election is decided by the electoral college, not the popular vote. We will over sample from the seven battleground states that are expected to decide the 2024 election: Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania [@fivethirtyeight]. Oversampling from the battleground states will allow us to put an emphasis on forecasting their results and increase the accuracy of our electoral college estimate.
+
+Our target sample size of 100,000 respondents will provide a margin of error of 2% at a 95% confidence level; this will allow us to be precise while still accounting for budgetary constraints [@pewhacking].
 
 ## Respondent recruitment
 
-We will use multi-channel respondent recruitment, including both phone and digital outreach. Phone outreach will allow us to capture older demographics and individuals who use the internet and social media less. Digital outreach, such as targeted social media ads, email lists, and news websites will enable us to recruit a broad sample. Digital outreach channels are cost effective and can reach younger demographics. We will allocate \$28,000 of our budget for rewarding survey respondents to improve our response rates, particularly within harder-to-reach groups such as young people and low-information voters [@tswd]. As shown by @BMC, incentives increase survey participation, particularly amongst lower-response demographics.
-
-## Survey Design
-
-Our survey is conducted using GoogleForms, which allows for an easy, user-friendly experience and increases respondent likelihood. The survey length is kept within the five to ten minute range, with thirteen questions to balance the need for data collection with the need for respondent engagement [@stantcheva2023].
-
-The survey includes the following sections:
-
--   Demographics: In this section, we collect essential demographic data that we will use for post-survey weighting. This includes gender and ethnicity.
-
--   Candidate evaluation: This section includes direct questions about candidate support, vote choice, and support level.
-
--   Key issues and concerns: This section includes questions that aim to identify the top issues driving voter decisions, such as abortion rights and the economy.
+We will use multi-channel respondent recruitment, including both phone and digital outreach. Phone outreach will allow us to capture older demographics and individuals who use the internet and social media less. Digital outreach, such as targeted social media ads, email lists, and news websites will enable us to recruit a broad sample. Digital outreach channels are cost effective and can reach younger demographics. We will allocate \$28,000 of our budget for rewarding survey respondents to improve our response rates, particularly within harder-to-reach groups such as young people and low-information voters [@tswd]. As shown by @BMC, incentives increase survey participation, particularly among hard-to-reach groups and demographics that are unlikely to respond.
 
 ## Data Validation
 
@@ -867,12 +874,44 @@ We will use post-stratification weighting to correct demographic imbalances in o
 
 ## Budget
 
+## Survey Design
+
+Our survey is conducted using GoogleForms, which allows for an easy, user-friendly experience and increases respondent likelihood. The survey length is kept within the five to ten minute range, with thirteen questions to balance the need for data collection with the need for respondent engagement [@stantcheva2023].
+
+The survey includes the following sections:
+
+-   Demographics: In this section, we collect essential demographic data that we will use for post-survey weighting. This includes gender and ethnicity.
+
+-   Candidate evaluation: This section includes direct questions about candidate support, vote choice, and support level.
+
+-   Key issues and concerns: This section includes questions that aim to identify the top issues driving voter decisions, such as abortion rights and the economy.
+
 ## Idealized survey questions
 
-2024 U.S. Presidential Election Poll This survey collects information about voters' political views and who they support in the 2024 U.S. Presidential Election. The data collected will not be shared with any external parties and will strictly be used for analytical purposes. This survey is completely anonymous and your data will be protected. Any published material regarding the results drawn from this survey cannot be traced back to you. The goal of this survey is to draw conclusions about the 2024 presidential elections held in the United States. Please answer as accurately as possible. If you have any questions or concerns, please reach out to aliza.mithwani\@mail.utoronto.ca (correspondence will not be shared with any external parties).
+Thank you for your interest in our 2024 U.S. Presidential Election Survey. The election will take place on Tuesday, November 5th, 2024 and it will decide the 47th President of the United States. Your participation is 100% voluntary and you can withdraw at any time, for any reason, with no questions asked.
+
+This survey collects information about voters' political views and who they support in the 2024 U.S. Presidential Election. The data collected will not be shared with any external parties and will strictly be used for research purposes only. This survey is completely anonymous and your data will be protected. Any published material regarding the results drawn from this survey will not be traceable back to you. The goal of this survey is to conduct research about the upcoming presidential election. Please answer as accurately as possible.
+
+[Contact Information]{.underline}
+
+If you have any questions or concerns about this survey or its methodology, please reach out via email to any of the following individuals:
+
+-   Aliza Mithwani: aliza.mithwani\@mail.utoronto.ca
+
+-   Fatimah Yunusa: fatimah.yunusa\@mail.utoronto.ca
+
+-   Talia Fabregas: talia.fabregas\@mail.utoronto.ca
+
+Correspondence will not be shared with any external parties.
+
+**Screening and Consent**
+
+By checking this box, I consent to this survey collecting personal information and information about my political views, my preferred 2024 presidential candidate, and who I voted for in 2020 for research purposes only.
+
+-   I consent.
 
 1.  Are you a registered voter in the United States ? Yes No
-2.  Do you plan to vote in the upcoming presidential election? Yes No Undecided
+2.  Which of the following describes your intention to vote in the upcoming presidential election? Yes, I will vote; No, I will not vote; I will probably vote; I probably will not vote; Undecided.
 
 **Demographics Questions**
 
@@ -1061,6 +1100,7 @@ posterior_vs_prior(harris_model) +
 ### Trump Model
 
 In @fig-ppcheckandposteriorvspriortrump-1 we implement a posterior predictive check. It shows the comparison of the actual outcome variable, $pct\_trump$, with simulations from the posterior distribution [@tswd]. @fig-ppcheckandposteriorvspriortrump-2 shows a comparison of the posterior with the prior.
+
 ```{r}
 #| eval: true
 #| echo: false
@@ -1084,9 +1124,11 @@ posterior_vs_prior(trump_model) +
   theme(legend.position = "bottom") +
   coord_flip()
 ```
+
 ## Distribution
 
 Credibility intervals are the equivalent of confidence intervals when using a Bayesian model [@tswd]. We use Bayesian estimation to get a distribution for each coefficient. @fig-harrisarea shows the 95% credibility intervals for the coefficients in the Harris model. @fig-trumparea shows the 95% credibility intervals for the coefficients in the Trump model. There is a 95% probability mass between the two ends of the 95% credibility interval [@tswd].
+
 ```{r}
 #| eval: true
 #| echo: false
