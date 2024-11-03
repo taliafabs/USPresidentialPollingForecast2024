@@ -3924,7 +3924,90 @@ modelsummary::modelsummary(
   kableExtra::kable_styling(font_size = 9) # Adjust font size to make table smaller
 This code reduces the amount of information shown in the table by limiting goodness-of-fit metrics to just "nobs" and "r.squared" and decreases the font size to 9 for a more compact display. Adjust gof_map as needed to include additional fit statistics, or further modify the layout using kableExtra.
 
+You said:
+Weighting (registered voters)
 
+The survey was weighted by The Times using the survey package in R in multiple steps.
+
+First, the sample was adjusted for unequal probability of selection by stratum.
+
+Second, each poll was weighted to match voter file-based parameters for the characteristics of registered voters.
+
+The following targets were used:
+
+• Party (party registration if available in the state, else classification based on participation in partisan primaries if available in the state, else classification based on a model of vote choice in prior Times/Siena polls) by race (L2 model)
+
+• Age (self-reported age, or voter-file age if the respondent refused) by gender (L2 data)
+
+• Education (four categories of self-reported education level, weighted to match NYT-based targets derived from Times/Siena polls, census data and the L2 voter file)
+
+• White/nonwhite race by college or noncollege educational attainment (L2 model of race weighted to match NYT-based targets for self-reported education)
+
+• Marital status (L2 model)
+
+• Homeownership (L2 model)
+
+• Home value (L2 model)
+
+• Turnout history (NYT classifications based on L2 data)
+
+• Method of voting in the 2020 general election (L2 data)
+
+• NYC region (NYT classifications)
+
+Finally, the sample of respondents who completed all questions in the survey was weighted identically as well as to the result for the general-election horse-race question (including voters leaning a certain way) on the full sample.
+
+Weighting (likely electorate)
+
+The survey was weighted by The Times using the R survey package in multiple steps.
+
+First, the samples were adjusted for unequal probability of selection by stratum.
+
+Second, the first-stage weight was adjusted to account for the probability that a registrant would vote in the 2024 election, based on a model of turnout in the 2020 election.
+
+Third, the sample was weighted to match targets for the composition of the likely electorate. The targets for the composition of the likely electorate were derived by aggregating the individual-level turnout estimates described in the previous step for registrants on the L2 voter file. The categories used in weighting were the same as those previously mentioned for registered voters.
+
+Fourth, the initial likely electorate weight was adjusted to incorporate self-reported intention to vote. Four-fifths of the final probability that a registrant would vote in the 2024 election was based on the registrant’s ex ante modeled turnout score, and one-fifth was based on self-reported intentions, based on prior Times/Siena polls, including a penalty to account for the tendency of survey respondents to turn out at higher rates than nonrespondents. The final likely electorate weight was equal to the modeled electorate rake weight, multiplied by the final turnout probability and divided by the ex ante modeled turnout probability.
+
+Finally, the sample of respondents who completed all questions in the survey was weighted identically as well as to the result for the general election horse-race question (including leaners) on the full sample.
+
+The margin of error accounts for the survey’s design effect, a measure of the loss of statistical power due to survey design and weighting.
+
+The design effect for the full sample is 1.26 for the likely electorate and 1.36 for registered voters.
+
+For the sample of completed interviews, among the likely electorate, the margin of sampling error is plus or minus 4.15 points, including a design effect of 1.31.
+
+Historically, The Times/Siena Poll’s error at the 95th percentile has been plus or minus 5.1 percentage points in surveys taken over the final three weeks before an election. Real-world error includes sources of error beyond sampling error, such as nonresponse bias, coverage error, late shifts among undecided voters and error in estimating the composition of the electorate.
+
+Please summarize this
+
+ChatGPT said:
+ChatGPT
+The survey conducted by The Times involved a multi-step weighting process using the survey package in R to ensure results were representative of both registered voters and the likely electorate.
+
+Weighting for Registered Voters:
+Sample Adjustment: Corrected for unequal selection probability across different groups (strata).
+
+Weighting to Match Voter Characteristics: The sample was weighted to align with voter file-based targets on several characteristics, including:
+
+Party affiliation by race
+Age and gender
+Education levels
+Racial and educational breakdowns
+Marital status, homeownership, home value, and past voting behavior
+Voting method in 2020 and New York City regional classification
+Final Step: Respondents who completed all questions were given equal weight, as were the general-election horse-race question responses on the full sample.
+
+Weighting for Likely Electorate:
+Sample Adjustment: Adjusted for unequal selection probability.
+Turnout Probability: Weights were adjusted based on the likelihood a registrant would vote in 2024, modeled from 2020 turnout data.
+Matching Likely Electorate Targets: Weighted to reflect projected electorate composition.
+Turnout Intentions: Combined a modeled turnout score with self-reported voting intentions (with adjustments for overreporting).
+Final Step: The sample of completed responses was weighted identically for both general election and leaners.
+Margin of Error:
+Adjusted for a design effect (statistical power loss due to design and weighting): 1.26 for the likely electorate and 1.36 for registered voters.
+Margin of error for the likely electorate sample is ±4.15 points, factoring in a design effect of 1.31.
+Historical error rates include sources beyond sampling, such as nonresponse, coverage errors, and last-minute shifts.
 
 
 
