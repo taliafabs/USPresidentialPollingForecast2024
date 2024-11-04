@@ -7,7 +7,7 @@
 # Pre-requisites:
 # - The `tidyverse`, `arrow` and `testthat` package must be installed and loaded
 # - 02-download_data.R and 03-clean_data.R must have been run
-# Any other information needed? No
+# Any other information needed? No 
 
 
 #### Workspace setup ####
