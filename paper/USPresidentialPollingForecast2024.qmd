@@ -949,13 +949,13 @@ The target population, defined by @tswd is the population that Times/Siena polls
 
 Times/Siena selects the respondents for its polls at random, from a national list of registered voters gathered from various high-quality voter registration databases [@nytsiena]. The list of registered voters contains demographic information for each voter; this allows Times/Siena to reach out to the right number of voters from each party, state, region, and race [@nytbattlegrounds]. Once selected, respondents are called from one of the call centers based in New York, Florida, Virginia, Texas, or South Carolina [@nytsiena]. It often takes multiple attempts to reach respondents, and overall, around 2% of the calls from pollsters are answered [@nytsiena]. A response rate of 2% appears low at first, but it is very common for high-quality polls to have low single-digit response rates [@silvergut]. Times/Siena pollsters limit the calls to 15 minutes to keep respondents engaged [@nytsiena]. In the late October 2024 battleground poll, Times/Siena made around 850,000 calls to over 320,000 voters across the seven battleground states [@nytbattlegrounds].
 
-## Sampling approach 
+## Sampling approach
 
-The Times/Siena late October 2024 battleground poll uses a response-rate-adjusted stratified sampling approach. Stratified sampling is a probability-based approach that involves dividing the sampling frame of voters in the seven battleground states into distinct strata [@tswd] based on statehouse district, party, race, gender, marital status, household size, turnout history, age and home ownership [@nytbattlegrounds]. Voters were then randomly selected from each stratum to get a sample that is representative of likely voters in the seven battleground states. The sample was adjusted for unequal probability of selection via stratum, to account for the probability that a respondent will actually vote in the 2024 election, and to match targets for the likely composition of the 2024 electorate [@nytbattlegrounds]. Assigning higher weightings to groups that were underrepresented in the sample was used to try to correct the non-response bias caused pollsters to underestimate support for Trump in 2016 and 2020 \[@nytbattlegrounds\].
+The Times/Siena late October 2024 battleground poll uses a response-rate-adjusted stratified sampling approach. Stratified sampling is a probability-based approach that involves dividing the sampling frame of voters in the seven battleground states into distinct strata [@tswd] based on statehouse district, party, race, gender, marital status, household size, turnout history, age and home ownership [@nytbattlegrounds]. Voters were then randomly selected from each stratum to get a sample that is representative of likely voters in the seven battleground states. The sample was adjusted for unequal probability of selection via stratum, to account for the probability that a respondent will actually vote in the 2024 election, and to match targets for the likely composition of the 2024 electorate [@nytbattlegrounds]. Assigning higher weightings to groups that were underrepresented in the sample was used to try to correct the non-response bias caused pollsters to underestimate support for Trump in 2016 and 2020 [@nytbattlegrounds].
 
-The final sample included 7,879 likely voters from the seven battleground state \[@nytbattlegrounds\]. The breakdown is as follows: 1,025 from Arizona; 1,010 from Nevada; 1,004 from Georgia; 1,010 from North Carolina; 1,305 from Wisconsin; 998 from Michigan; 1,527 from Pennsylvania [@nytbattlegrounds]. @nytbattlegrounds oversampled and included a supplemental sample of unregistered voters from Wisconsin because the state has a history of significant election day voter registration.
+The final sample included 7,879 likely voters from the seven battleground state [@nytbattlegrounds]. The breakdown is as follows: 1,025 from Arizona; 1,010 from Nevada; 1,004 from Georgia; 1,010 from North Carolina; 1,305 from Wisconsin; 998 from Michigan; 1,527 from Pennsylvania [@nytbattlegrounds]. @nytbattlegrounds oversampled and included a supplemental sample of unregistered voters from Wisconsin because the state has a history of significant election day voter registration.
 
-## Strengths and limitations 
+## Strengths and limitations
 
 The Times/Siena late October 2024 poll's strengths include its focus on the key battleground states and its use of stratified sampling. Focusing on the seven key battleground states instead of the popular vote allows this poll to forecast the winner of the election. Effective use of stratified sampling can correct non-response bias and under-representation of Trump voters in the sample by weighting each strata according to the general population and increasing the weight of groups that were less likely to respond [@Clinton2024]. Times/Siena polls do not use weighting by recalled vote to address non-response bias and correct polling misses from 2016 and 2020 [@natecohn]. In @sec-pollmiss, we reported that weighting by recalled vote would have made polls from every election since 2004 less accurate and overestimated support for the losing candidate.
 
@@ -969,13 +969,13 @@ We used the statistical programming language R [@citeR] and the `dplyr` [@dplyr]
 
 We selected following variables (columns) to include in our analysis data:
 
--    `poll_id`: the unique id of a poll.
+-   `poll_id`: the unique id of a poll.
 
 -   `pollster`: the pollster who conducted the poll.
 
 -   `numeric_grade`: the grade that the poll received. We only considered polls with a numeric grade of 3.0 or higher [@MorrisBestPollsters].
 
--    `pollscore`: the Predictive Optimization of Latent skill Level in Surveys, Considering Overall Record of a poll [@Morris538].
+-   `pollscore`: the Predictive Optimization of Latent skill Level in Surveys, Considering Overall Record of a poll [@Morris538].
 
 -   `state`: the state where the poll was conducted or NA if it is a national poll. We used the `mutate` function in base R [@citeR] to make state equivalent to "National" in rows where it was initially NA.
 
@@ -987,7 +987,7 @@ We selected following variables (columns) to include in our analysis data:
 
 -   `candidate_name`: the candidate whose support that row of the dataset shows
 
--    `pct`: the percentage of support that candidate with name `candidate_name` from `party` received in the poll with unique id `poll_id`
+-   `pct`: the percentage of support that candidate with name `candidate_name` from `party` received in the poll with unique id `poll_id`
 
 We constructed the `end_date_num` variable using the `as.Date()` function from base R [@citeR]. `end_date_num` is equivalent to the number of days since President Biden ended his re-election campaign on July 21, 2024.
 
