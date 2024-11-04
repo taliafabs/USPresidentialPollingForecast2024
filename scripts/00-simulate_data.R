@@ -2,7 +2,7 @@
 # Purpose: Simulates a dataset that contains
 # Author: Talia Fabregas, Aliza Mithwani, Fatimah Yunusa
 # Date: 31 October 2024
-# Contact: talia.fabregas@mail.utoronto.ca
+# Contact: talia.fabregas@mail.utoronto.ca, fatimah.yunusa@mail.utoronto.ca, aliza.mithwani@mail.utoronto.ca 
 # License: MIT
 # Pre-requisites: The `tidyverse` and `arrow` packages must be installed
 # Any other information needed? Make sure you are in the `USPresidentialPollingForecast2024` rproj

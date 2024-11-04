@@ -2,7 +2,7 @@
 # Purpose: Tests the analysis data
 # Author: Talia Fabregas, Aliza Mithwani, Fatimah Yunusa
 # Date: 31 October 2024
-# Contact: talia.fabregas@mail.utoronto.ca
+# Contact: talia.fabregas@mail.utoronto.ca,fatimah.yunusa@mail.utoronto.ca, aliza.mithwani@mail.utoronto.ca 
 # License: MIT
 # Pre-requisites:
 # - The `tidyverse`, `arrow` and `testthat` package must be installed and loaded
