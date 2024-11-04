@@ -53,9 +53,13 @@ numeric_grades <- c(0.5, 0.6, 0.7, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7,
 sample_size <- round(rnorm(1, mean = 1700, sd = 500))
 sample_size <- pmax(500, pmin(sample_size, 10000))
 
+
 #### Simulate the Data ####
+
 simulated_data <- tibble(
-  poll_id = 1:num_simulated_polls,
+  # generate the unique poll_id
+  poll_id = sample(10000:99999, num_simulated_polls, replace=FALSE),
+  date = sample(dates, num_simulated_polls, replace=TRUE),
   state = sample(
     states,
     size = num_simulated_polls,
@@ -90,8 +94,13 @@ simulated_data <- tibble(
     state == "Minnesota" ~ pmax(0, pmin(rnorm(1, mean = 53, sd = 2.5), 100)),
     state == "Missouri" ~ pmax(0, pmin(rnorm(1, mean = 41, sd = 2.5), 100))
   ),
+  # calculate trump_pct
   trump_pct = 100-harris_pct
 )
+
+# arrange the simulated polling data by date
+simulated_data <- simulated_data %>%
+  arrange(date)
 
 #### Save data ####
 write_csv(simulated_data, "data/00-simulated_data/simulated_data.csv")
