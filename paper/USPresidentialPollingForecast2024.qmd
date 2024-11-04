@@ -963,7 +963,31 @@ No poll is without limitations. The Times/Siena late October 2024 poll's weaknes
 
 ## Data Cleaning {#sec-data-cleaning}
 
-We used R [@citeR] and the dplyr [@dplyr] and janitor [@janitor] packages to clean the raw presidential poll data that we obtained from @fivethirtyeight. Our raw dataset contained polling data going back to 2021. We sub-setted it to only include polling data from May 5, 2024 and later (the six-month period leading up to the 2024 presidential election). However, President Biden ended his campaign on July 21, 2024 and Vice President Harris became the nominee, so we sub-setted it further to only include polling data from July 21, 2024 and later with a numeric grade of 3 that had a population of likely voters. We then filtered to only include polling data for Harris and Trump, since they are the two major party candidates. We did not use third-party candidate polling data. We selected the `poll_id`, `pollster`, `numeric_grade`, `pollscore`, `state`, `end_date`, `population`, and `pct` columns.
+We used R [@citeR] and the dplyr [@dplyr] and janitor [@janitor] packages to clean the raw presidential poll data that we obtained from @fivethirtyeight. Our raw dataset contained polling data going back to 2021. We sub-setted it to only include polling data from May 5, 2024 and later (the six-month period leading up to the 2024 presidential election). However, President Biden ended his campaign on July 21, 2024 and Vice President Harris became the nominee, so we sub-setted it further to only include polling data from July 21, 2024 and later with a numeric grade of 3 that had a population of likely voters. We then filtered to only include polling data for Harris and Trump, since they are the two major party candidates. We did not use third-party candidate polling data.
+
+We selected following variables (columns) to include in our analysis data:
+
+-    `poll_id`: the unique id of a poll.
+
+-   `pollster`: the pollster who conducted the poll.
+
+-   `numeric_grade`: the grade that the poll received. We only considered polls with a numeric grade of 3.0 or higher [@MorrisBestPollsters].
+
+-    `pollscore`: the Predictive Optimization of Latent skill Level in Surveys, Considering Overall Record of a poll [@Morris538].
+
+-   `state`: the state where the poll was conducted or NA if it is a national poll. We used the `mutate` function in base R [@citeR] to make state equivalent to "National" in rows where it was initially NA.
+
+-   `end_date`: the date that the poll was completed
+
+-   `population`: the narrowest category included in the poll's sample (likely voters \< registered voters \< all adults). We considered polls where the population is likely voters; this means that these polls included likely voters, but may have also included registered voters and all adults [@fivethirtyeight].
+
+-   `party`: the party whose support that row of the dataset shows
+
+-   `candidate_name`: the candidate whose support that row of the dataset shows
+
+-    `pct`: the percentage of support that candidate with name `candidate_name` from `party` received in the poll with unique id `poll_id`
+
+We constructed the `end_date_num` variable using the `as.Date()` function from base R [@citeR]. `end_date_num` is equivalent to the number of days since President Biden ended his re-election campaign on July 21, 2024.
 
 ## Polling averages from before President Joe Biden ended his re-election campaign {#sec-Biden}
 
