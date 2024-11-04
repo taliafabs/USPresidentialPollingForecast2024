@@ -67,6 +67,5 @@ trump <-
 
 #### Save data ####
 write_parquet(cleaned_data, "data/02-analysis_data/analysis_data.parquet")
-# write_parquet(model_data, "data/02-analysis_data/model_data.parquet")
 write_parquet(harris, "data/02-analysis_data/harris-analysis_data.parquet")
 write_parquet(trump, "data/02-analysis_data/trump-analysis_data.parquet")
