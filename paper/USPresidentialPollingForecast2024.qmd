@@ -49,12 +49,6 @@ trump_analysis_data <- arrow::read_parquet("data/02-analysis_data/trump-analysis
 
 On Tuesday November 5, 2024, Americans will head to the polls to elect their 47th president. Polling data has shown a tight race between VIce President Kamala Harris and former President Donald Trump since President Joe Biden made the historic and unprecedented decision to end his re-election campaign on July 21, 2024. President Biden immediately endorsed Vice President Harris on July 21, making her the presumptive Democratic nominee. Vice President Harris officially became the Democratic nominee on August 2, 2024 following a virtual rollcall. This paper uses presidential polling data from after President Joe Biden ended his re-election campaign and Vice President Harris became the presumptive Democratic nominee and Bayesian models to estimate the percentages of voters supporting Vice President Harris and former President Trump.
 
-<!-- Estimands paragraph -->
-
-<!-- The estimands, defined by @tswd as the values we are trying to estimate, are true effects of how long after Biden exited the race a poll was conducted -->
-
-<!-- the percentages of voters that support Vice President Harris and former President Trump at the national level, in each of the seven battleground states (Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania), and in Nebraska's second congressional district. -->
-
 We are interested in the effects of time since Biden ended his re-election campaign, state, pollster, and pollscore on the percentages of poll respondents supporting Vice President Harris and former President Trump at the national level, in each of the seven battleground states (Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania), and in Nebraska's second congressional district. Our estimand, which we can never know for sure, is the true effect of time, state, pollster, and pollscore on the percentages of voters supporting Harris and Trump [@tswd].
 
 <!-- Results paragraph -->
@@ -344,9 +338,7 @@ trump_model <-
   readRDS(file = here::here("models/trump_model.rds"))
 ```
 
-## National Popular Vote Results
-
-<!-- Popular vote prediction after applying the Harris and Trump models. -->
+## National popular vote results
 
 We applied the Harris model and the Trump model defined in @sec-modelsetup to predict each candidate's share of the national popular vote.
 
@@ -585,7 +577,7 @@ ggplot() +
     )
 ```
 
-## State-Level Results for the Seven Battleground States and Nebraska's Second Congressional District {#sec-sec42}
+## State-Level results for the seven battleground states and Nebraska's second congressional district {#sec-sec42}
 
 Vice President Harris starts out with 225 electoral college votes from states that went to both Hillary Clinton in 2016 and Joe Biden in 2020 [@270towin]. These states are considered safe or likely Democrat and available poling from @fivethirtyeight shows Vice President Harris with a lead outside the five percent margin of error and in most cases, a double-digit lead. Former President Trump starts out with 219 electoral college votes from states that he won in both 2016 and 2020 [@270towin]. These states are considered safe or likely Republican and available polling data from @fivethirtyeight shows former President Trump with a lead outside the five percent margin of error, and in most cases, a double-digit lead. For this reason, the results of the Bayesian models presented in @sec-model focus on estimating support for Vice President Harris and former President Trump in Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, Pennsylvania, and Nebraska's second congressional district, which are worth a total of 94 electoral votes [@270towin].
 
@@ -802,9 +794,9 @@ kable(ec_results)
 
 ## Why Harris or Trump could win {#sec-first-point}
 
-The 2024 U.S. presidential election is a tossup. Vice President Harris and former President Trump have been polling within a few percentage points of each other in national and state-level polls in Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania since the summer [@silvergut]. Our results presented in @sec-results show Harris leading Trump 48.3% to 47.1% in the popular vote and 270 to 268 in the electoral college. Our electoral college prediction is based on narrow leads for Harris in Wisconsin, Michigan, and Pennsylvania and narrow leads for Trump in Arizona, Nevada, Georgia, and North Carolina. Harris' popular vote lead and all of Harris' and Trump's leads in the seven battleground states fall well within the margin of error. Fifty-fifty is the only reasonable forecast that we can draw from this [@silvergut]. It is possible that these fifty-fifty forecasts are wrong, and both candidates are equally likely to overperform them and win the election comfortably [@silvergut].
+The 2024 U.S. presidential election is a tossup. Vice President Harris and former President Trump have been polling within a few percentage points of each other in national and state-level polls in Arizona, Nevada, Georgia, North Carolina, Wisconsin, Michigan, and Pennsylvania since the summer [@silvergut]. Our results presented in @sec-results show Harris leading Trump 48.3% to 47.1% in the popular vote and 270 to 268 in the electoral college. Our electoral college prediction is based on narrow leads for Harris in Wisconsin, Michigan, and Pennsylvania and narrow leads for Trump in Arizona, Nevada, Georgia, and North Carolina. Harris' popular vote lead and all of Harris' and Trump's leads in the seven battleground states fall well within the margin of error. Fifty-fifty is the only reasonable forecast that we can draw from this [@silvergut]. It is possible that these fifty-fifty forecasts are wrong, and both candidates are equally likely to out perform them and win the election comfortably [@silvergut].
 
-A normal polling error could swing the popular vote and the seven battleground states in either candidate's favor. @silvergut found that the average polling miss is 3 to 4 percentage points. If either Harris or Trump outperforms their swing state and national polling averages by 3 to 4 percentage points, they would win the popular vote, sweep the seven battleground states, and win the electoral college comfortably [@silvergut]. This would result in Harris winning the electoral college 319 to 219 or Trump winning the electoral college 313 to 226; both of these results are within the margin of error shown in @sec-results.
+A normal polling error could swing the popular vote and the seven battleground states in either candidate's direction [@silvergut]. @silvergut found that the average polling miss is 3 to 4 percentage points. If either Harris or Trump outperforms their swing state and national polling averages by 3 to 4 percentage points, they would win the popular vote, sweep the seven battleground states, and win the electoral college comfortably [@silvergut]. This would result in Harris winning the electoral college 319 to 219 or Trump winning the electoral college 313 to 226; both of these results are within the margin of error shown in @sec-results.
 
 Vice President Harris could outperform her polling averages and win the election if
 
@@ -812,7 +804,7 @@ Trump could ...
 
 ## Polling misses in 2016, 2020, and 2022
 
-Polls underestimated support for former President Trump in the 2016 and 2020 presidential elections. Non-response bias, specifically how pollsters handled non-responses, is a major reason for this because
+Polls underestimated support for former President Trump in the 2016 and 2020 presidential elections. Non-response bias, specifically how pollsters handled non-responses, is a major reason for this because Trump voters are more likely to distrust public institutions and government, which makes them less likely to respond to a survey [@silvergut]
 
 In 2020, 93% of national polls overestimated support for President Biden and underestimated support for Trump among likely voters [@kennedy2021]. Biden won the 2020 presidential election, but by a smaller popular vote margin and swing state margins than the polls predicted. @silvergut suggests that the fact that Democrats were more likely to stay home because of Covid restrictions and as a result, had more time to answer phone calls or respond to online surveys may have contributed to the 2020 polling misses.
 
@@ -858,15 +850,11 @@ Our target sample size of 100,000 respondents will provide a margin of error of 
 
 ## Respondent recruitment
 
-We will use multi-channel respondent recruitment, including both phone and digital outreach. Phone outreach will allow us to capture older demographics and individuals who use the internet and social media less. Digital outreach, such as targeted social media ads, email lists, and news websites will enable us to recruit a broad sample. Digital outreach channels are cost effective and can reach younger demographics. We will allocate \$28,000 of our budget for rewarding survey respondents to improve our response rates, particularly within harder-to-reach groups such as young people and low-information voters [@tswd]. As shown by @BMC, incentives increase survey participation, particularly among hard-to-reach groups and demographics that are unlikely to respond.
+We will use multi-channel respondent recruitment, including both phone and digital outreach. Phone outreach will allow us to capture older demographics and individuals who use the internet and social media less. Telephone polls have fared well in recent elections because voter registration files, like L2, provide a clear way to ensure a balance between Democrat and Republican respondents and are a great way to reach a random sample quickly [@nytsiena]. Digital outreach, such as targeted social media ads, email lists, and news websites will enable us to recruit a broader sample. Digital outreach channels are cost effective and can reach younger demographics. We will allocate \$20,000 of our budget for rewarding phone poll respondents, particularly within harder-to-reach groups such as young people, low-information voters, and voters without a college education in the battleground states. As shown by @BMC, incentives increase survey participation, particularly among hard-to-reach groups and demographics that are unlikely to respond. Siena College/New York Times polls typically have response rates around 2%, which is in line with other high-quality polls [@nytsiena]. However, @nytsiena found that a Times/Siena telephone poll in the battleground state of Wisconsin that paid voters up to \$25 to respond to it obtained a response rate close to 30%.
 
 ## Data Validation
 
 Common issues with surveys include incomplete or inconsistent responses, duplicate responses, and fake responses by bots. We will use automate validation checks to detect and filter out incomplete or inconsistent responses, IP tracking to prevent duplicate responses, and CAPTCHA technology to minimize bot interference [@zhang2019].
-
-## Poll Aggregation
-
-We will use the seven-day average method to aggregate polls because it decreases fluctuations in daily responses by smoothing out temporary spikes. This will make trends clearer.
 
 ## Weighting and Data Adjustments
 
@@ -874,9 +862,25 @@ We will use post-stratification weighting to correct demographic imbalances in o
 
 ## Budget
 
+Our idealized survey budget breakdown is as follows:
+
+-   Personnel Costs: \$30,00
+
+-   Incentives: \$20,000
+
+-   Advertising and Recruitment: \$20,000
+
+-   Survey Platform Costs: \$15,000
+
+-   Data Validation: \$10,000
+
+-   Poll Aggregation Software: \$5,000
+
 ## Survey Design
 
-Our survey is conducted using GoogleForms, which allows for an easy, user-friendly experience and increases respondent likelihood. The survey length is kept within the five to ten minute range, with thirteen questions to balance the need for data collection with the need for respondent engagement [@stantcheva2023].
+Our survey is conducted using GoogleForms, which allows for an easy, user-friendly experience and increases respondent likelihood. The survey length is kept within the five to ten minute range, with thirteen questions to balance the need for data collection with the need for respondent engagement [@stantcheva2023]. As suggested by @stantcheva2023, we used plain language throughout the survey and kept our questions short to reduce the cognitive load and the risk of voters exiting the survey because they find it too tedious to answer. Priming is a cognitive-based question order effect; it involves using the question order to make respondents think about a topic related to the following questions and therefore, influencing the respondent’s answers to those questions [@stancheva2023]. Placing questions about key issues
+
+Question 12, which is about optimism for the future of the country, is our only question that could induce moderacy response bias. Moderacy response bias is defined by @stantcheva2023 as the tendency of respondents to pick what they perceive as the neutral middle option.
 
 The survey includes the following sections:
 
@@ -885,6 +889,8 @@ The survey includes the following sections:
 -   Candidate evaluation: This section includes direct questions about candidate support, vote choice, and support level.
 
 -   Key issues and concerns: This section includes questions that aim to identify the top issues driving voter decisions, such as abortion rights and the economy.
+
+## Tradeoffs and Limitations
 
 ## Idealized survey questions
 
@@ -911,7 +917,7 @@ By checking this box, I consent to this survey collecting personal information a
 -   I consent.
 
 1.  Are you a registered voter in the United States ? Yes No
-2.  Which of the following describes your intention to vote in the upcoming presidential election? Yes, I will vote; No, I will not vote; I will probably vote; I probably will not vote; Undecided.
+2.  Which of the following describes your intention to vote or not in the upcoming presidential election? Yes, I will vote; No, I will not vote; I will probably vote; I probably will not vote; Undecided.
 
 **Demographics Questions**
 
@@ -931,11 +937,11 @@ By checking this box, I consent to this survey collecting personal information a
 
 9.  If the 2024 presidential election were held today, who would you vote for?
 
-Donald Trump, Republican Kamala Harris, Democrat Jill Stein, Green Party Write-in Don't know Prefer not to say Other (please specify)
+Kamala Harris, Democrat Donald Trump, Republican Jill Stein, Green Party Write-in Don't know Prefer not to say Other (please specify)
 
 (Optional) If you selected "Write-in" for the last question, please specify below:
 
-10. Do you consider yourself a Democrat, a Republican, an Independent, or a member of another party? Democrat Republican Independent Another Party Don't know Prefer not to say
+10. Do you consider yourself a Democrat, a Republican, an Independent, or a member of another party? Democrat, Republican, Lean Democrat, Lean Republican, Independent Another Party Don't know Prefer not to say
 
 **Key Issues and Concerns**
 
@@ -953,17 +959,23 @@ Thank you for your response! Your answers have successfully been recorded.
 
 ## Overview
 
-The Siena College/New York Times (Times/Siena) poll is a collaboration between the New York Times and the Siena College Research Institute that aims to capture voter sentiment in the battleground states and the nation overall [@nytsiena]. Its accuracy has made it a highly regarded poll for predicting U.S. presidential election results. The NYT/Siena poll uses live poll interviews to reach a representative sample of voters and measure their political preferences, views, and issue priorities [@nytsiena]. Its methodology focuses on
+The Siena College/New York Times (Times/Siena) poll is a collaboration between the New York Times and the Siena College Research Institute that aims to capture voter sentiment in the battleground states and the nation overall [@nytsiena]. Its accuracy has made it a highly regarded poll for predicting U.S. presidential election results. The NYT/Siena poll uses live poll interviews to reach a representative sample of voters and measure their political preferences, views, and issue priorities [@nytsiena]. The core concept of the Siena College/New York times survey methodology is obtaining a sample that is representative of the U.S. electorate as a whole [@nytsiena].
 
-## Population and Sampling Frame
+We will evaluate the methodology of a New York Times/Siena College poll conducted in the seven battleground states (Arizona, Georgia, Michigan, Nevada, North Carolina, Pennsylvania, and Wisconsin) in late October 2024 (between October 24 and November 2, 2024) [@nytbattlegrounds]. We will refer to this poll as the TImes/Siena late October 2024 battleground poll.
 
-The target population, defined by @tswd is the population that the Times/Siena poll aims to speak about, is registered voters and likely voters in the United States. Some polls conducted by Times/Siena have a target population of registered voters, while others use likely voters [@nytsienacrosstabs]. The sampling frame, defined by @tswd as the individuals from the target population that Times/Siena can get data about is drawn from various voter registration databases, including the L2 voter database [@nytsiena]. In polls for the 2024 presidential election, Times/Siena has put an emphasis on gathering nationally-representative and state-specific samples for the seven battleground states that decided the 2020 presidential election and are expected to decide the 2024 presidential election: Arizona, Nevada, Georgia, North Carolina, Michigan, Wisconsin, and Pennsylvania [@nytsiena]. A sampling frame that includes various voter registration databases helps ensure precise targeting and that the sample reflects the demographics of registered or likely voters in the upcoming U.S. election [@nytsiena].
+## Population and sampling frame
 
-## Respondent Recruitment Strategy
+The target population, defined by @tswd is the population that Times/Siena polls aim to speak about, is registered voters and likely voters in the United States. Some polls conducted by Times/Siena have a target population of registered voters, while others use likely voters [@nytsienacrosstabs]. The sampling frame, defined by @tswd as the individuals from the target population that Times/Siena can get data about is drawn from various voter registration databases, including the L2 voter database [@nytsiena]. In polls for the 2024 presidential election, Times/Siena has put an emphasis on gathering nationally-representative and state-specific samples for the seven battleground states that decided the 2020 presidential election and are expected to decide this election as well: Arizona, Nevada, Georgia, North Carolina, Michigan, Wisconsin, and Pennsylvania [@nytsiena]. A sampling frame that includes various voter registration databases helps ensure precise targeting and that the sample reflects the demographics of registered or likely voters in the upcoming U.S. election [@nytsiena].
 
-Times/Siena recruits respondents for its poll at random, from a national list of registered voters gathered from various high-quality voter registration databases [@nytsiena].
+The target population of the Times/Siena late October 2024 battleground poll is likely voters in the seven battleground states and its sampling frame is voters in the L2 list of registered voters that live in those states.
 
-## Sampling Approch and Trade-offs
+## Respondent recruitment
+
+Times/Siena selects the respondents for its polls at random, from a national list of registered voters gathered from various high-quality voter registration databases [@nytsiena]. The list of registered voters contains demographic information for each voter; this allows Times/Siena to reach out to the right number of voters from each party, state, region, and race [@nytbattlegrounds]. Once selected, respondents are called from one of the call centers based in New York, Florida, Virginia, Texas, or South Carolina [@nytsiena]. It often takes multiple attempts to reach respondents, and overall, around 2% of the calls from pollsters are answered [@nytsiena]. A response rate of 2% appears low at first, but it is very common for high-quality polls to have low single-digit response rates [@silvergut]. Times/Siena pollsters limit the calls to 15 minutes to keep respondents engaged [@nytsiena].
+
+## Sampling approach and trade offs
+
+In the late October 2024 battleground poll, Times/Siena made around 850,000 calls to over 320,000 voters across the seven battleground states [@nytbattlegrounds].
 
 ## Strengths and limitations of The Siena College/New York Times methodology
 
