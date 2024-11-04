@@ -1,8 +1,8 @@
 #### Preamble ####
 # Purpose: Models the
 # Author: Talia Fabregas, Aliza Mithwani, Fatimah Yunusa
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: talia.fabregas@mail.utoronto.ca
+# Date: 31 October, 2024 
+# Contact: talia.fabregas@mail.utoronto.ca,fatimah.yunusa@mail.utoronto.ca, aliza.mithwani@mail.utoronto.ca  
 # License: MIT
 # Pre-requisites:Run 01-download_data.R and 03-clean_data.R
 # Any other information needed? Data was downloaded and saved from FiveThirtyEight on October 29, 2024
